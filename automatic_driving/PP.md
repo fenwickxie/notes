@@ -90,7 +90,66 @@ flowchart LR
     + 从U中选出“距离最短的节点k”，将k移入S中，并从U中移除k
     + 更新U中各节点到起点s的距离，利用k更新其他节点的距离（(s,v)可能大于(s,k)+(k,v)）
     + 重复步骤2、3，直到遍历所有节点
-  
++ 代码实现
+
+```python
+import numpy as np
+
+"""图定义
+A-B-C-D-E-F-G
+1-2-3-4-5-6-7
+"""
+
+nodes_dict = {
+    1: np.asarray([[2, 6, 7], [12, 16, 14]], np.float32).T,
+    2: np.asarray([[1, 3, 6], [12, 10, 7]], np.float32).T,
+    3: np.asarray([[2, 4, 5, 6], [10, 3, 5, 6]], np.float32).T,
+    4: np.asarray([[3, 5], [3, 4]], np.float32).T,
+    5: np.asarray([[3, 4, 6, 7], [5, 4, 2, 8]], np.float32).T,
+    6: np.asarray([[1, 2, 3, 5, 7], [16, 7, 6, 2, 9]], np.float32).T,
+    7: np.asarray([[1, 5, 6], [14, 8, 9]], np.float32).T
+}
+
+"""算法初始化
+S/U的第一列表示节点编号
+对于S，第二列表示从源节点到本节点已求出的最小距离，不再变更
+对于U，第二列表示从源节点到本节点暂得的最小距离，可能变更
+"""
+S = np.asarray([[4, 0]], np.float32)
+U = np.zeros([6, 2], np.float32)
+U[:, 0] = [1, 2, 3, 5, 6, 7]
+U[:, 1] = ['inf', 'inf', 3, 4, 'inf', 'inf']
+
+# 最优路径及暂时最优路径的初始化
+path_option = {4: [4]}
+path_temp = {3: [4, 3], 4: [4], 5: [4, 5]}
+
+while U.size != 0:
+    dist_min = np.min(U[:, 1])
+    row_idx = np.argmin(U[:, 1])
+    node_min = U[row_idx, 0]
+    S = np.concat((S, [[node_min, dist_min]]))
+    U = np.delete(U, row_idx, 0)
+    
+    # 将最小距离的节点添加到最优路径集合
+    path_option[node_min] = path_temp[node_min]
+    
+    # 遍历最小距离节点的邻节点，判断是否在U集合中更新邻节点的距离
+    nearby_nodes = nodes_dict[node_min][:, 0]
+    for n in range(len(nearby_nodes)):
+        node_temp = nearby_nodes[n]  # 节点
+        idx_temp = np.where(U[:, 0] == node_temp)  # 节点在U索引
+        if node_temp in U[:, 0]:  # 判断节点是否在U集合中
+            if dist_min + nodes_dict[node_min][:, 1][n] < U[idx_temp, 1]:
+                U[idx_temp, 1] = dist_min + nodes_dict[node_min][:, 1][n]
+                
+                # 更新暂时最优路径
+                path_temp[node_temp] = path_option[node_min] + [node_temp]
+
+print(np.asarray(S, dtype = np.int8))
+print(np.asarray(path_option[1], dtype = np.int8))
+```
+
   ![Dijkstra](https://ucc.alicdn.com/pic/developer-ecology/cdzfr5ewdwyaw_47893bdb4e2d4d7aaeecf1fad84c1266.gif?x-oss-process=image%2Fresize%2Cw_1400%2Fformat%2Cwebp)
   + 优点：可以找到最短路径；适用于有权图
   + 缺点：时间复杂度高；不能处理负权边
