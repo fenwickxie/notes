@@ -9,6 +9,20 @@
 ## 模型训练
 ### 基座模型
 + 开源模型：Qwen2.5-0.5B-Instruct
++ 关键参数
+
+|Models|	Params|	Non-Emb Params|	Layers|	Heads (KV)|	Tie Embedding|	Context Length|	Generation Length|	License|
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|Qwen2.5-0.5B|	0.49B|	0.36B|	24|	14 / 2|	Yes|	32K|	8K|	Apache 2.0|
+|Qwen2.5-1.5B|	1.54B|	1.31B|	28|	12 / 2|	Yes|	32K|	8K|	Apache 2.0|
+|Qwen2.5-3B|	3.09B|	2.77B|	36|	16 / 2|	Yes|	32K|	8K|	Qwen Research|
+|Qwen2.5-7B|	7.61B|	6.53B|	28|	28 / 4|	No|	128K|	8K|	Apache 2.0|
+|Qwen2.5-14B|	14.7B|	13.1B|	48|	40 / 8|	No|	128K|	8K|	Apache 2.0|
+|Qwen2.5-32B|	32.5B|	31.0B|	64|	40 / 8|	No|	128K|	8K|	Apache 2.0|
+|Qwen2.5-72B|	72.7B|	70.0B|	80|	64 / 8|	No|	128K|	8K|	Qwen|
+
++ [性能及其他详细信息](https://qwenlm.github.io/blog/qwen2.5-llm/)
+
 
 ---
 
@@ -193,3 +207,13 @@ CUDA_VISIBLE_DEVICES=0 llamafactory-cli export \
 
 ### LangChain-Chatchat
 利用[langchain](https://github.com/langchain-ai/langchain)思想实现的基于本地知识库的问答应用
+
+#### 项目原理
+项目实现原理如下图所示，过程包括加载文件 -> 读取文本 -> 文本分割 -> 文本向量化 -> 问句向量化 -> 在文本向量中匹配出与问句向量最相似的 top k个 -> 匹配出的文本作为上下文和问题一起添加到 `prompt` 中 -> 提交给 LLM生成回答。
+![LangChain-Chatchat原理](https://github.com/chatchat-space/Langchain-Chatchat/blob/master/docs/img/langchain+chatglm.png}
+![文档角度](https://github.com/chatchat-space/Langchain-Chatchat/blob/master/docs/img/langchain+chatglm2.png)
+
+#### 源代码开发部署
+
+
+
