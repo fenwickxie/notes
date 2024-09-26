@@ -69,7 +69,7 @@
 ### 数据获取
 #### 自定义数据
 将数据以 `json` 格式进行组织，并将数据放入 `data` 文件夹中。LLaMA-Factory 支持以 `alpaca` 或 `sharegpt` 格式的数据集
-+ alpaca 格式的数据集应遵循以下格式
++ `alpaca` 格式的数据集应遵循以下格式
 ```json
 [
   {
@@ -84,7 +84,7 @@
   }
 ]
 ```
-+ sharegpt 格式的数据集应遵循以下格式
++ `sharegpt` 格式的数据集应遵循以下格式
 ```json
 [
   {
@@ -107,8 +107,8 @@
 #### 定义数据集
 在 data/dataset_info.json 文件中提供数据集定义
 
-+ 对于 alpaca 格式的数据集，其 dataset_info.json 文件中的列应为
-```
++ 对于 `alpaca` 格式的数据集，其 `dataset_info.json` 文件中的列应为
+```json
 "dataset_name": {
   "file_name": "dataset_name.json",
   "columns": {
@@ -120,9 +120,9 @@
   }
 }
 ```
-+ 对于 sharegpt 格式的数据集，dataset_info.json 文件中的列应该包括
++ 对于 `sharegpt` 格式的数据集，`dataset_info.json` 文件中的列应该包括
 
-```
+```json
 "dataset_name": {
     "file_name": "dataset_name.json",
     "formatting": "sharegpt",
@@ -209,11 +209,35 @@ CUDA_VISIBLE_DEVICES=0 llamafactory-cli export \
 利用[langchain](https://github.com/langchain-ai/langchain)思想实现的基于本地知识库的问答应用
 
 #### 项目原理
-项目实现原理如下图所示，过程包括加载文件 -> 读取文本 -> 文本分割 -> 文本向量化 -> 问句向量化 -> 在文本向量中匹配出与问句向量最相似的 top k个 -> 匹配出的文本作为上下文和问题一起添加到 `prompt` 中 -> 提交给 LLM生成回答。
-![LangChain-Chatchat原理](https://github.com/chatchat-space/Langchain-Chatchat/blob/master/docs/img/langchain+chatglm.png}
+项目实现原理如下图所示，过程包括加载文件 -> 读取文本 -> 文本分割 -> 文本向量化 -> 问句向量化 -> 在文本向量中匹配出与问句向量最相似的 `k` 个 -> 匹配出的文本作为上下文和问题一起添加到 `prompt` 中 -> 提交给 LLM生成回答。
+![LangChain-Chatchat原理](https://github.com/chatchat-space/Langchain-Chatchat/blob/master/docs/img/langchain+chatglm.png)
 ![文档角度](https://github.com/chatchat-space/Langchain-Chatchat/blob/master/docs/img/langchain+chatglm2.png)
 
 #### 源代码开发部署
++ 项目文件
+```bash
+git clone https://github.com/chatchat-space/Langchain-Chatchat.git
+```
++ 初始化开发环境
+创建并激活一个新的 conda 环境，并使用 Poetry 进行环境依赖管理
+  + 安装 Poetry
+  ```bash
+  pip install -U pip setuptools
+  pip install poetry
+  ```
+使用 Conda 或 Pyenv 作为您的环境/包管理器，在安装Poetry之后， 使用如下命令使 Poetry 使用 virtualenv python environment (`poetry config virtualenvs.prefer-active-python true`)
+  + 安装依赖
+  ```
+  cd  Langchain-Chatchat/libs/chatchat-server/
+  pip install -e .
+  ```
++ 设置源代码根目录
+目录(Langchain-Chatchat/libs/chatchat-server/)设置为源代码根目录
+执行以下命令之前，请先设置当前目录和项目数据目录：
+
+
+
+
 
 
 
