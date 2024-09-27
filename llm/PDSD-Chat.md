@@ -204,9 +204,20 @@ CUDA_VISIBLE_DEVICES=0 llamafactory-cli export \
 ---
 
 ## 应用搭建
+> [Warning]
+> 为避免依赖冲突，将 Langchain-Chatchat 和模型部署框架（如Xinference）放在不同的=虚拟环境中
+
+### xinference推理框架部署
+
+
+
 
 ### LangChain-Chatchat
 利用[langchain](https://github.com/langchain-ai/langchain)思想实现的基于本地知识库的问答应用
+
+> [Note]
+> Xinference 加载本地模型: Xinference 内置模型会自动下载,如果加载本地模型,可以在启动 Xinference 服务后,到项目 `tools/model_loaders` 目录下执行 `streamlit run xinference_manager.py`,按照页面提示为指定模型设置本地路径即可
+> 会出现没有权限复制文件的情况
 
 #### 项目原理
 项目实现原理如下图所示，过程包括加载文件 -> 读取文本 -> 文本分割 -> 文本向量化 -> 问句向量化 -> 在文本向量中匹配出与问句向量最相似的 `k` 个 -> 匹配出的文本作为上下文和问题一起添加到 `prompt` 中 -> 提交给 LLM生成回答。
@@ -219,25 +230,108 @@ CUDA_VISIBLE_DEVICES=0 llamafactory-cli export \
 git clone https://github.com/chatchat-space/Langchain-Chatchat.git
 ```
 + 初始化开发环境
-创建并激活一个新的 conda 环境，并使用 Poetry 进行环境依赖管理
-  + 安装 Poetry
-  ```bash
-  pip install -U pip setuptools
-  pip install poetry
-  ```
-使用 Conda 或 Pyenv 作为您的环境/包管理器，在安装Poetry之后， 使用如下命令使 Poetry 使用 virtualenv python environment (`poetry config virtualenvs.prefer-active-python true`)
+创建并激活一个新的 conda 环境
+```bash
+conda create -n chatchat python=3.9.20
+conda activate chatchat
+```
   + 安装依赖
-  ```
+  ```bash
   cd  Langchain-Chatchat/libs/chatchat-server/
   pip install -e .
   ```
 + 设置源代码根目录
-目录(Langchain-Chatchat/libs/chatchat-server/)设置为源代码根目录
-执行以下命令之前，请先设置当前目录和项目数据目录：
+目录(Langchain-Chatchat/libs/chatchat-server/)设置为源代码根目录，先设置当前目录和项目数据目录：
+```bash
+cd Langchain-Chatchat/libs/chatchat-server/chatchat
 
+# on linux or macos
+export CHATCHAT_ROOT=/path/to/chatchat_data
+# on windows
+set CHATCHAT_ROOT=/path/to/chatchat_data
+```
+若不设置该环境变量，则自动使用当前目录
 
++ 执行初始化
+初始化项目配置文件和数据目录：
+```bash
+cd libs/chatchat-server
+chatchat init -l qwen2.5-instruct -e bge-large-zh-v1.5
+# or 
+python chatchat/cli.py init -l qwen2.5-instruct -e bge-large-zh-v1.5
+```
+该命令会执行以下操作：
+  + 创建所有需要的数据目录
+  + 复制 samples 知识库内容
+  + 生成默认 yaml 配置文件
 
++ 修改配置文件
+  + 配置模型（`libs/chatchat-server/model_settings.yaml`）
+  主要修改以下内容:
+  ```json
+  # 默认选用的 LLM 名称
+   DEFAULT_LLM_MODEL: qwen2.5-instruct
+   # 默认选用的 Embedding 名称
+   DEFAULT_EMBEDDING_MODEL: bge-large-zh-v1.5
+  
+  # 将 `LLM_MODEL_CONFIG` 中 `llm_model, action_model` 的键改成对应的 LLM 模型
+  # 在 `MODEL_PLATFORMS` 中修改对应模型平台信息
+  ```
+  + 配置知识库路径（`libs/chatchat-server/basic_settings.yaml`）
+    默认知识库位于 `libs/chatchat-server/data/knowledge_base`，如果你想把知识库放在不同的位置，或者想连接现有的知识库，可以在这里修改对应目录
+  ```
++ 初始化知识库
 
+> [!Warning]
+> 进行知识库初始化前，请确保已经启动模型推理框架及对应 embedding 模型，且已按照上述步骤完成模型接入配置
 
+```bash
+cd libs/chatchat-server
+chatchat kb -r
+# or
+python chatchat/cli.py kb -r
+```
 
+> [!Warning]
+> 下方命令会清空数据库、删除已有的配置文件，注意备份
 
+```bash
+cd libs/chatchat-server
+chatchat kb --recreate-vs
+# or
+python chatchat/cli.py kb --recreate-vs
+```
+
+> [!Note]
+> 知识库初始化的常见问题
+> 
+> <details>
+>
+> Windows 下重建知识库或添加知识文件时卡住不动
+> 此问题常出现于新建虚拟环境中，可以通过以下方式确认：
+>
+> `from unstructured.partition.auto import partition`
+>
+> 如果该语句卡住无法执行，可以执行以下命令：
+> ```bash
+> pip uninstall python-magic-bin
+> # check the version of the uninstalled package
+> pip install 'python-magic-bin=={version}'
+> ```
+> 然后重新创建知识库即可
+> </details>
+
++ 启动项目
+
+```bash
+cd libs/chatchat-server
+python chatchat/cli.py start -a
+# or
+chatchat start -a
+```
+
+> [!WARNING]  
+> 由于 chatchat 配置默认监听地址 `DEFAULT_BIND_HOST` 为 127.0.0.1, 所以无法通过其他 ip 进行访问。
+>
+> 如需通过机器ip 进行访问(如 Linux 系统), 需要到 `basic_settings.yaml` 中将监听地址修改为 0.0.0.0。
+> </details>
