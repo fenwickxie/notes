@@ -270,9 +270,9 @@ python chatchat/cli.py init -l qwen2.5-instruct -e bge-large-zh-v1.5
   主要修改以下内容:
   ```json
   # 默认选用的 LLM 名称
-   DEFAULT_LLM_MODEL: qwen2.5-instruct
-   # 默认选用的 Embedding 名称
-   DEFAULT_EMBEDDING_MODEL: bge-large-zh-v1.5
+  DEFAULT_LLM_MODEL: qwen2.5-instruct
+  # 默认选用的 Embedding 名称
+  DEFAULT_EMBEDDING_MODEL: bge-large-zh-v1.5
   
   # 将 `LLM_MODEL_CONFIG` 中 `llm_model, action_model` 的键改成对应的 LLM 模型
   # 在 `MODEL_PLATFORMS` 中修改对应模型平台信息
