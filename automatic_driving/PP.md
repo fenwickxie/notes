@@ -93,7 +93,6 @@ mindmap
     + Spline-RRT\*
     + Fast Marching Trees (FMT\*)
     + Batch Informed Trees (BIT\*)
-  + 动态规划算法
 + 局部路径规划
   + 多项式曲线法
   + 势场法
