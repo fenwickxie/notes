@@ -1,11 +1,6 @@
 <style>@import url(../auto_number_title.css); </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css">
-<script src="https://cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script>
 
 # Pathing Planning(路径规划)
-+ 基于搜索的路径规划
-+ 基于采样的路径规划
-
 
 ```mermaid
 mindmap
@@ -28,10 +23,34 @@ mindmap
         驱动
         制动
     全局路径规划
-      Dijkstra
-      蚁群算法
-      动态规划算法
-      A\*算法
+      基于搜索的路径规划
+        BFS(Breadth-First Searching，广度优先搜索)
+        DFS(Depth-First Searching，深度优先搜索)
+        Best-First Searching(最佳优先搜索)
+        Dijkstra
+        ACO(Ant Colony Optimization, 蚁群算法)
+        A\*
+        Bidirectional A\*
+        Anytime Repairing A\*
+        Learning Real-time A\* (LRTA*)
+        Real-time Adaptive A\* (RTAA*)
+        Lifelong Planning A\* (LPA*)
+        Dynamic A\* (D\*)
+        D\* Lite
+        Anytime D\*
+      基于采样的路径规划
+        RRT
+        RRT-Connect
+        Extended-RRT
+        Dynamic-RRT
+        RRT\*
+        Informed RRT\*
+        RRT* Smart
+        Anytime RRT\*
+        Closed-Loop RRT\*
+        Spline-RRT\*
+        Fast Marching Trees (FMT\*)
+        Batch Informed Trees (BIT\*)
     局部路径规划
       多项式曲线法
       势场法
@@ -45,30 +64,51 @@ mindmap
 
 ```
 
++ 全局路径规划
+  + 基于搜索的路径规划
+    + BFS(Breadth-First Searching，广度优先搜索)
+    + DFS(Depth-First Searching，深度优先搜索)
+    + Best-First Searching(最佳优先搜索)
+    + **Dijkstra**
+    + **ACO(Ant Colony Optimization, 蚁群算法)**
+    + **A\***
+    + Bidirectional A\*
+    + Anytime Repairing A\*
+    + Learning Real-time A\* (LRTA*)
+    + Real-time Adaptive A\* (RTAA*)
+    + Lifelong Planning A\* (LPA*)
+    + Dynamic A\* (D\*)
+    + D\* Lite
+    + Anytime D\*
+  + 基于采样的路径规划
+    + RRT
+    + RRT-Connect
+    + Extended-RRT
+    + Dynamic-RRT
+    + RRT\*
+    + Informed RRT\*
+    + RRT* Smart
+    + Anytime RRT\*
+    + Closed-Loop RRT\*
+    + Spline-RRT\*
+    + Fast Marching Trees (FMT\*)
+    + Batch Informed Trees (BIT\*)
+  + 动态规划算法
++ 局部路径规划
+  + 多项式曲线法
+  + 势场法
+  + 贝塞尔曲线法
+  + B样条曲线
+
 
 ## 基于搜索的路径规划
 
 通过搜索图形结构来找到最短或最优的路径，其中 A\* 是最为常用和经典的算法之一
 
-### BFS(Breadth-First Searching，广度优先搜索)
-  + 优点：可找到最短路径；适用于无权图
-  + 缺点：时间复杂度高；空间复杂度高
-
-### DFS(Depth-First Searching，深度优先搜索)
-![DFS](https://ucc.alicdn.com/pic/developer-ecology/cdzfr5ewdwyaw_03a6a9066f2440a79ad83d16e0e59629.gif?x-oss-process=image%2Fresize%2Cw_1400%2Fformat%2Cwebp)
-
-  + 优点：空间复杂度低
-  + 可能会陷入死循环；不一定能找到最短路径
- 
-### Best-First Searching(最佳优先搜索)
-  + 优点：速度快；可以处理启发式信息
-  + 缺点：可能会陷入局部最优解
- 
-### <font color=Red>**Dijkstra**</font>
-
-一种用于求解图中单源最短路径问题的经典算法，可以用来找到从一个顶点到其他所有顶点的最短路径。可以应用于有向图或无向图。该算法通过不断更新起点到各个顶点的最短路径来找到最终的最短路径。Dijkstra算法的时间复杂度为$O(V^2)$，其中V为顶点数，但可以通过优先队列实现最小堆来优化时间复杂度。
-
 ```mermaid
+---
+title: 路径规划示例
+---
 flowchart LR
   A((A))<--12-->B((B))
   A<--14-->G((G))
@@ -83,12 +123,31 @@ flowchart LR
   C<--3-->D((D))
   E<--4-->D
 ```
+
+### BFS
+  + 优点：可找到最短路径；适用于无权图
+  + 缺点：时间复杂度高；空间复杂度高
+
+### DFS
+![DFS](https://ucc.alicdn.com/pic/developer-ecology/cdzfr5ewdwyaw_03a6a9066f2440a79ad83d16e0e59629.gif?x-oss-process=image%2Fresize%2Cw_1400%2Fformat%2Cwebp)
+
+  + 优点：空间复杂度低
+  + 可能会陷入死循环；不一定能找到最短路径
+ 
+### Best-First Searching
+  + 优点：速度快；可以处理启发式信息
+  + 缺点：可能会陷入局部最优解
+ 
+### <font color=Red>**Dijkstra**</font>
+
+一种用于求解图中单源最短路径问题的经典算法，可以用来找到从一个顶点到其他所有顶点的最短路径。可以应用于有向图或无向图。该算法通过不断更新起点到各个顶点的最短路径来找到最终的最短路径。Dijkstra算法的时间复杂度为 $O(V^2)$ ，其中`V`为顶点数，但可以通过优先队列实现最小堆来优化时间复杂度。
+
 + 算法思想
-  + 设G=(V,E)是一个带权有向图，把图中节点集合分为两组，<font color=Red>第一组为已求出最短路径的节点集合</font>（用S表示，初始时S中只有一个源点，以后每求得一条最短路径，就将该节点加入到S中，知道全部节点都加入S）
+  + 设`G=(V,E)`是一个带权有向图，把图中节点集合分为两组，<font color=Red>第一组为已求出最短路径的节点集合</font>（用`S`表示，初始时`S`中只有一个源点，以后每求得一条最短路径，就将该节点加入到`S`中，知道全部节点都加入`S`）
   + <font color=Red>第二组为其余未确定最短路径的节点集合</font>（用U表示），按最短路径递增次序依次把第二组节点加入S中
-    + 初始时，S只包含起点s，U包含除s以外的其他节点，U中节点v和s不相邻则距离为$\infity$
-    + 从U中选出“距离最短的节点k”，将k移入S中，并从U中移除k
-    + 更新U中各节点到起点s的距离，利用k更新其他节点的距离（(s,v)可能大于(s,k)+(k,v)）
+    + 初始时，`S`只包含起点`s`，`U`包含除`s`以外的其他节点，`U`中节点`v`和`s`不相邻则距离为 $\infity$
+    + 从U中选出“距离最短的节点`k`”，将`k`移入`S`中，并从`U`中移除`k`
+    + 更新U中各节点到起点`s`的距离，利用`k`更新其他节点的距离（`(s,v)`可能大于`(s,k)+(k,v)`）
     + 重复步骤2、3，直到遍历所有节点
 + 代码实现
 
@@ -112,8 +171,8 @@ nodes_dict = {
 
 """算法初始化
 S/U的第一列表示节点编号
-对于S，第二列表示从源节点到本节点已求出的最小距离，不再变更
-对于U，第二列表示从源节点到本节点暂得的最小距离，可能变更
+对于`S`，第二列表示从源节点到本节点已求出的最小距离，不再变更
+对于`U`，第二列表示从源节点到本节点暂得的最小距离，可能变更
 """
 S = np.asarray([[4, 0]], np.float32)
 U = np.zeros([6, 2], np.float32)
@@ -154,6 +213,39 @@ print(np.asarray(path_option[1], dtype = np.int8))
   + 优点：可以找到最短路径；适用于有权图
   + 缺点：时间复杂度高；不能处理负权边
 
+### ACO
+
+模拟蚂蚁的觅食行为，每只蚂蚁在经过的路径释放信息素，蚂蚁倾向于走最短路径，信息素浓度表征路径的远近
+较短路径上蚂蚁的往返时间比较短，单位时间内经过该路径的蚂蚁多，所以信息素的积累速度比较长路径快
+其他路径上的信息素会随着时间蒸发，最终所有的蚂蚁都在最优路径上行进
++ 数学描述
+  设蚁群中蚂蚁数量为 $m$ ，城市数量为 $n$ ，城市i与城市j之间的距离为 $d_{ij}(i,j=1,2,\ldots,n)$ ， $t$ 时刻城市 $i$ 与城市 $j$ 链接路径上的信息素浓度为 $\tau_{ij}(t),\tau_{ij}(0)=0$ 。
+  蚂蚁 $k$ 根据各城市连接道路上的信息素浓度决定下一个访问城市，设 $P_{ij}^{k}(t)$ 表示 $t$ 时刻蚂蚁 $k$ 从城市 $i$ 转移到城市 $j$ 的概率，其计算公式如下:
+
+$$
+P_{ij}^{k}(t)
+\begin{cases}
+\frac{\left[\tau_{ij}(t)\right]^{\alpha}\left[\eta_{ij} (t)\right]^{\beta}}{\sum_{u\in J_{k} (i)}\left[\tau(i,u)\right]^{\alpha}\left[\eta(i,u)\right]^{\beta}}& j\in J_{k}(i)\\
+0& j\notin J_{k}(i)
+\end{cases}  
+$$
+  
+  + 对于每只蚂蚁 $k$ ，路径记忆向量 $R^k$ 按照访问顺序记录了所有k已经经过的城市序号
+    + 设蚂蚁 $k$ 当前所在城市为 $i$ ，则其选择城市 $j$ 作为下一个访问对象的概率如上式
+    + $J_k(i)$ 表示从城市 $i$ 可以直接到达的、且又不在蚂蚁访问过的城市序列中的城市集合
+    + $\eta(i,j)$ 是一个启发式信息，通常由 $\eta(i,j)=\frac{1}{d_{ij}}$ 直接计算
+    + $\tau(i,j)$ 表示边 $(i,j)$ 上的信息素量
+  + 长度越短、信息素浓度越大的路径被蚂蚁选择的概率越大
+    + $\alpha$ 和 $\beta$ 是两个预先设置的参数，用来控制启发式信息与信息素浓度作用的权重关系
+    + 当 $\alpha=0$ 时，算法演变成传统的随机贪心算法，最邻近城市被选中的概率最大
+    + 当 $\beta=0$ 时，蚂蚁完全只根据信息素浓度确定路径，算法将快速收敛，这样构建出的最优路径往往与实际目标有着较大的差异，算法的性能比较糟糕
+  + 信息素更新
+    1. 在算法初始化时，问题空间中所有的边上的信息素都被初始化为 $t0$
+    2. 算法迭代每一轮，问题空间中的所有路径上的信息素都会发生蒸发，我们为所有边上的信息素乘上一个小于1的常数。信息素蒸发是自然界本身固有的特征，在算法中能够帮助避免信息素的无限积累，使得算法可以快速丢弃之前构建过的较差的路径
+    3. 蚂蚁根据自己构建的路径长度在它们本轮经过的边上释放信息素
+        + 蚂蚁构建的路径越短、释放的信息素就越多
+        + 一条边被蚂蚁爬过的次数越多、它所获得的信息素也越多
+    4. 迭代（ii），直至算法终止
 ### <font color=Red>**A\***</font>
 
 A\*算法是一种启发式搜索算法，它结合了Dijkstra算法和贪婪最佳优先搜索算法的优点。A\*算法通过估计从当前节点到目标节点的代价来动态调整搜索方向，从而更快地找到最佳路径。
