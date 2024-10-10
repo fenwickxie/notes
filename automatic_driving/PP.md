@@ -129,8 +129,7 @@ flowchart LR
 
 ### DFS
 
-![DFS](https://ucc.alicdn.com/pic/developer-ecology/cdzfr5ewdwyaw_03a6a9066f2440a79ad83d16e0e59629.gif?x-oss-process=image%2Fresize%2Cw_1400%2Fformat%2Cwebp)
-
+<p align='center'><img src='./asserts/DFS.webp' width='30%'></p>
 + 优点：空间复杂度低
 + 缺点：可能会陷入死循环；不一定能找到最短路径
 
@@ -210,7 +209,7 @@ print(np.asarray(S, dtype = np.int8))
 print(np.asarray(path_option[1], dtype = np.int8))
 ```
 
-  ![Dijkstra](https://ucc.alicdn.com/pic/developer-ecology/cdzfr5ewdwyaw_47893bdb4e2d4d7aaeecf1fad84c1266.gif?x-oss-process=image%2Fresize%2Cw_1400%2Fformat%2Cwebp)
+<p align='center'><img src='./asserts/Dijkstra.webp' width='30%'></p>
 
 + 优点：可以找到最短路径；适用于有权图
 + 缺点：时间复杂度高；不能处理负权边
@@ -269,11 +268,25 @@ $$
 \end{cases}
 $$
 
+### 动态规划算法
+
+把多阶段决策问题转换为一系列单阶段最优化问题
+<p align='center'><img src='./asserts/多阶段决策示意图.jpeg' width='30%'></p>
+
++ 逆向寻优，正向求解
++ DP算法本质由三层循环构成
+  + 第一层遍历每个阶段
+  + 第二层遍历第i个阶段的每个状态
+  + 第三层循环遍历第i+1阶段的每个状态
+
+<p align='center'><img src='./asserts/DP.jpeg' width='30%'></p>
+
+
+
 ### <font color=Red>**A\***</font>
 
 A\*算法是一种启发式搜索算法，它结合了Dijkstra算法和贪婪最佳优先搜索算法的优点。A\*算法通过估计从当前节点到目标节点的代价来动态调整搜索方向，从而更快地找到最佳路径。
-
-![A*](https://ucc.alicdn.com/pic/developer-ecology/cdzfr5ewdwyaw_b2108b2564b642aeb20b80b513c98d72.gif?x-oss-process=image%2Fresize%2Cw_1400%2Fformat%2Cwebp)
+<p align='center'><img src='./asserts/A_star.webp' width='30%'></p>
 
 + 优点：速度快；可以处理启发式信息；可以找到最短路径
 + 缺点：可能会陷入局部最优解
