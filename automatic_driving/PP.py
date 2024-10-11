@@ -106,3 +106,128 @@ class Dijkstra:
         
         print(np.asarray(self.S, dtype = np.int8))
         print(np.asarray(self.path_option[4], dtype = np.int8))
+class ACO:
+    def __init__(self, nodes_dict, start_node, end_node, num_ants: int, num_iter: int, eva_rate: float, alpha, beta, Q):
+        # 始末节点
+        self.start_node = start_node
+        self.end_node = end_node
+        # 蚁群相关定义
+        self.num_ants = num_ants  # 蚂蚁数量
+        self.eva_rate = eva_rate  # 信息素挥发因子，(0,1)区间
+        self.alpha = alpha  # 信息素重要程度因子
+        self.beta = beta  # 启发函数重要程度因子
+        self.Q = Q  # 释放信息素常量
+        # 迭代相关参数初始化
+        self.num_iter = num_iter  # 循环次数，蚁群代数
+        self.path_best = []  # 各代最佳路径
+        self.length_best = []  # 各代最佳路径的长度
+        self.length_avg = []  # 各代路径的平均长度
+        
+        # 将信息素、启发信息一并放入nodes_dict中
+        for node in nodes_dict:
+            pheromone_array = np.ones((nodes_dict[node].shape[0], 1), np.float32)
+            nodes_dict[node] = np.hstack((nodes_dict[node], pheromone_array))
+            nodes_dict[node] = np.hstack((nodes_dict[node], 1 / nodes_dict[node][:, 1:2]))
+        
+        self.nodes_dict = nodes_dict
+def aco_func(self):
+        # 蚁群代数循环
+        for iteration in range(self.num_iter):
+            path_ants = []
+            length = []
+            # 每代蚁群中每个蚂蚁循环
+            for ant in range(self.num_ants):
+                path_ant = []
+                nodes_neighbor = []
+                node_current = self.start_node
+                path_ant.append(node_current)
+                distance = 0.
+                
+                while self.end_node not in path_ant:  # 当终结点在路径列表时跳出循环
+                    nodes_neighbor_with_distance = self.nodes_dict[node_current]
+                    # search nearby node
+                    nodes_neighbor = nodes_neighbor_with_distance[:, 0:1]
+                    
+                    # print(nodes_neighbor)
+                    
+                    # delete nodes those were visited
+                    nodes_neighbor = [node for node in nodes_neighbor if node not in path_ant]
+                    
+                    # Judge whether it has entered a dead end, if it has, back to start and restart searching
+                    if len(nodes_neighbor) == 0:
+                        # init again
+                        nodes_neighbor = []
+                        node_current = self.start_node
+                        path_ant.append(node_current)
+                        distance = 0.
+                        continue
+                    
+                    # calculate prob of next node
+                    prob = []
+                    for idx, node in enumerate(nodes_neighbor_with_distance[:, 0:1]):
+                        if node in nodes_neighbor:
+                            prob.append(
+                                (nodes_neighbor_with_distance[idx, 2:3] ** self.alpha) * (nodes_neighbor_with_distance[
+                                                                                          idx, 3:4] ** self.beta)
+                            )
+                    prob = np.asarray(prob) / np.sum(prob)
+                    
+                    # roulette wheel selection
+                    node_target = nodes_neighbor[roulette_wheel_selection(prob)]
+                    
+                    # update the pheromone after pick the next node
+                    nodes_neighbor_with_distance[:, 3:4] = (1 - self.eva_rate) * nodes_neighbor_with_distance[:, 3:4]
+                    
+                    # calculate single step distance
+                    for index, node in enumerate(nodes_neighbor_with_distance[:, 0:1]):
+                        if node == node_target:
+                            distance = distance + nodes_neighbor_with_distance[index, 1:2]
+                            
+                            # update the pheromone of the picked node
+                            nodes_neighbor_with_distance[index, 3:4] = 1 + nodes_neighbor_with_distance[index, 3:4]
+                    
+                    # update next node and path_ant
+                    node_current = int(node_target)
+                    path_ant.append(node_current)
+                    
+                # store the distance and path_ant of ant_i
+                length.append(distance)
+                path_ants.append(path_ant)
+            
+            # update path_best and length_best
+            length_ndarray = np.asarray(length)
+            min_index = np.argmin(length_ndarray)
+            min_length = length[min_index]
+            if iteration == 0:
+                self.length_best = min_length
+                self.length_avg = np.average(length_ndarray)
+                self.path_best = path_ants[min_index]
+            else:
+                if min_length < self.length_best:
+                    self.length_best = min_length
+                    self.length_avg = np.average(length_ndarray)
+                    self.path_best = path_ants[min_index]
+            # if iteration == 0:
+            #     self.length_best.append(min_length)
+            #     self.length_avg.append(np.average(length_ndarray))
+            #     self.path_best.append(path_ants[min_index])
+            # else:
+            #     if min_length < self.length_best:
+            #         self.length_best.append(min_length)
+            #         self.length_avg.append(np.average(length_ndarray))
+            #         self.path_best.append(path_ants[min_index])
+            #     else:
+            #         self.length_best.append(self.length_best[-1])
+            #         self.length_avg.append(self.length_avg.append[-1])
+            #         self.path_best.append(self.path_best[-1])
+        
+        return self.length_best, self.path_best, self.length_avg
+
+
+if __name__ == '__main__':
+    dijkstra = Dijkstra(nodes, 1)
+    dijkstra.dijkstra_func()
+    
+    aco = ACO(nodes, 1, 4, 50, 1000, 0.3, 1., 6., 1.)
+    length_best, path_best, length_avg = aco.aco_func()
+    print(path_best)
