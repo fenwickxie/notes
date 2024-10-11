@@ -86,7 +86,7 @@ class Dijkstra:
             dist_min = np.min(self.U[:, 1])
             row_idx = np.argmin(self.U[:, 1])
             node_min = self.U[row_idx, 0]
-            self.S = np.concat((self.S, [[node_min, dist_min]]))
+            self.S = np.concatenate((self.S, [[node_min, dist_min]]))
             self.U = np.delete(self.U, row_idx, 0)
             
             # 将最小距离的节点添加到最优路径集合
@@ -130,98 +130,98 @@ class ACO:
             nodes_dict[node] = np.hstack((nodes_dict[node], 1 / nodes_dict[node][:, 1:2]))
         
         self.nodes_dict = nodes_dict
-def aco_func(self):
-        # 蚁群代数循环
-        for iteration in range(self.num_iter):
-            path_ants = []
-            length = []
-            # 每代蚁群中每个蚂蚁循环
-            for ant in range(self.num_ants):
-                path_ant = []
-                nodes_neighbor = []
-                node_current = self.start_node
-                path_ant.append(node_current)
-                distance = 0.
-                
-                while self.end_node not in path_ant:  # 当终结点在路径列表时跳出循环
-                    nodes_neighbor_with_distance = self.nodes_dict[node_current]
-                    # search nearby node
-                    nodes_neighbor = nodes_neighbor_with_distance[:, 0:1]
-                    
-                    # print(nodes_neighbor)
-                    
-                    # delete nodes those were visited
-                    nodes_neighbor = [node for node in nodes_neighbor if node not in path_ant]
-                    
-                    # Judge whether it has entered a dead end, if it has, back to start and restart searching
-                    if len(nodes_neighbor) == 0:
-                        # init again
-                        nodes_neighbor = []
-                        node_current = self.start_node
-                        path_ant.append(node_current)
-                        distance = 0.
-                        continue
-                    
-                    # calculate prob of next node
-                    prob = []
-                    for idx, node in enumerate(nodes_neighbor_with_distance[:, 0:1]):
-                        if node in nodes_neighbor:
-                            prob.append(
-                                (nodes_neighbor_with_distance[idx, 2:3] ** self.alpha) * (nodes_neighbor_with_distance[
-                                                                                          idx, 3:4] ** self.beta)
-                            )
-                    prob = np.asarray(prob) / np.sum(prob)
-                    
-                    # roulette wheel selection
-                    node_target = nodes_neighbor[roulette_wheel_selection(prob)]
-                    
-                    # update the pheromone after pick the next node
-                    nodes_neighbor_with_distance[:, 3:4] = (1 - self.eva_rate) * nodes_neighbor_with_distance[:, 3:4]
-                    
-                    # calculate single step distance
-                    for index, node in enumerate(nodes_neighbor_with_distance[:, 0:1]):
-                        if node == node_target:
-                            distance = distance + nodes_neighbor_with_distance[index, 1:2]
-                            
-                            # update the pheromone of the picked node
-                            nodes_neighbor_with_distance[index, 3:4] = 1 + nodes_neighbor_with_distance[index, 3:4]
-                    
-                    # update next node and path_ant
-                    node_current = int(node_target)
+    def aco_func(self):
+            # 蚁群代数循环
+            for iteration in range(self.num_iter):
+                path_ants = []
+                length = []
+                # 每代蚁群中每个蚂蚁循环
+                for ant in range(self.num_ants):
+                    path_ant = []
+                    nodes_neighbor = []
+                    node_current = self.start_node
                     path_ant.append(node_current)
+                    distance = 0.
                     
-                # store the distance and path_ant of ant_i
-                length.append(distance)
-                path_ants.append(path_ant)
-            
-            # update path_best and length_best
-            length_ndarray = np.asarray(length)
-            min_index = np.argmin(length_ndarray)
-            min_length = length[min_index]
-            if iteration == 0:
-                self.length_best = min_length
-                self.length_avg = np.average(length_ndarray)
-                self.path_best = path_ants[min_index]
-            else:
-                if min_length < self.length_best:
+                    while self.end_node not in path_ant:  # 当终结点在路径列表时跳出循环
+                        nodes_neighbor_with_distance = self.nodes_dict[node_current]
+                        # search nearby node
+                        nodes_neighbor = nodes_neighbor_with_distance[:, 0:1]
+                        
+                        # print(nodes_neighbor)
+                        
+                        # delete nodes those were visited
+                        nodes_neighbor = [node for node in nodes_neighbor if node not in path_ant]
+                        
+                        # Judge whether it has entered a dead end, if it has, back to start and restart searching
+                        if len(nodes_neighbor) == 0:
+                            # init again
+                            nodes_neighbor = []
+                            node_current = self.start_node
+                            path_ant.append(node_current)
+                            distance = 0.
+                            continue
+                        
+                        # calculate prob of next node
+                        prob = []
+                        for idx, node in enumerate(nodes_neighbor_with_distance[:, 0:1]):
+                            if node in nodes_neighbor:
+                                prob.append(
+                                    (nodes_neighbor_with_distance[idx, 2:3] ** self.alpha) * (nodes_neighbor_with_distance[
+                                                                                              idx, 3:4] ** self.beta)
+                                )
+                        prob = np.asarray(prob) / np.sum(prob)
+                        
+                        # roulette wheel selection
+                        node_target = nodes_neighbor[roulette_wheel_selection(prob)]
+                        
+                        # update the pheromone after pick the next node
+                        nodes_neighbor_with_distance[:, 3:4] = (1 - self.eva_rate) * nodes_neighbor_with_distance[:, 3:4]
+                        
+                        # calculate single step distance
+                        for index, node in enumerate(nodes_neighbor_with_distance[:, 0:1]):
+                            if node == node_target:
+                                distance = distance + nodes_neighbor_with_distance[index, 1:2]
+                                
+                                # update the pheromone of the picked node
+                                nodes_neighbor_with_distance[index, 3:4] = 1 + nodes_neighbor_with_distance[index, 3:4]
+                        
+                        # update next node and path_ant
+                        node_current = int(node_target)
+                        path_ant.append(node_current)
+                        
+                    # store the distance and path_ant of ant_i
+                    length.append(distance)
+                    path_ants.append(path_ant)
+                
+                # update path_best and length_best
+                length_ndarray = np.asarray(length)
+                min_index = np.argmin(length_ndarray)
+                min_length = length[min_index]
+                if iteration == 0:
                     self.length_best = min_length
                     self.length_avg = np.average(length_ndarray)
                     self.path_best = path_ants[min_index]
-            # if iteration == 0:
-            #     self.length_best.append(min_length)
-            #     self.length_avg.append(np.average(length_ndarray))
-            #     self.path_best.append(path_ants[min_index])
-            # else:
-            #     if min_length < self.length_best:
-            #         self.length_best.append(min_length)
-            #         self.length_avg.append(np.average(length_ndarray))
-            #         self.path_best.append(path_ants[min_index])
-            #     else:
-            #         self.length_best.append(self.length_best[-1])
-            #         self.length_avg.append(self.length_avg.append[-1])
-            #         self.path_best.append(self.path_best[-1])
-        
-        return self.length_best, self.path_best, self.length_avg
+                else:
+                    if min_length < self.length_best:
+                        self.length_best = min_length
+                        self.length_avg = np.average(length_ndarray)
+                        self.path_best = path_ants[min_index]
+                # if iteration == 0:
+                #     self.length_best.append(min_length)
+                #     self.length_avg.append(np.average(length_ndarray))
+                #     self.path_best.append(path_ants[min_index])
+                # else:
+                #     if min_length < self.length_best:
+                #         self.length_best.append(min_length)
+                #         self.length_avg.append(np.average(length_ndarray))
+                #         self.path_best.append(path_ants[min_index])
+                #     else:
+                #         self.length_best.append(self.length_best[-1])
+                #         self.length_avg.append(self.length_avg.append[-1])
+                #         self.path_best.append(self.path_best[-1])
+            
+            return self.length_best, self.path_best, self.length_avg
 
 
 if __name__ == '__main__':
