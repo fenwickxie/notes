@@ -204,8 +204,8 @@ CUDA_VISIBLE_DEVICES=0 llamafactory-cli export \
 ---
 
 ## 应用搭建
-> [Warning]
-> 为避免依赖冲突，将 Langchain-Chatchat 和模型部署框架（如Xinference）放在不同的=虚拟环境中
+> [!Warning]
+> 为避免依赖冲突，将 Langchain-Chatchat 和模型部署框架（如Xinference）放在不同的虚拟环境中
 
 ### xinference推理框架部署
 
@@ -215,14 +215,14 @@ CUDA_VISIBLE_DEVICES=0 llamafactory-cli export \
 ### LangChain-Chatchat
 利用[langchain](https://github.com/langchain-ai/langchain)思想实现的基于本地知识库的问答应用
 
-> [Note]
+> [!Note]
 > Xinference 加载本地模型: Xinference 内置模型会自动下载,如果加载本地模型,可以在启动 Xinference 服务后,到项目 `tools/model_loaders` 目录下执行 `streamlit run xinference_manager.py`,按照页面提示为指定模型设置本地路径即可
 > 会出现没有权限复制文件的情况
 
 #### 项目原理
 项目实现原理如下图所示，过程包括加载文件 -> 读取文本 -> 文本分割 -> 文本向量化 -> 问句向量化 -> 在文本向量中匹配出与问句向量最相似的 `k` 个 -> 匹配出的文本作为上下文和问题一起添加到 `prompt` 中 -> 提交给 LLM生成回答。
-![LangChain-Chatchat原理](https://github.com/chatchat-space/Langchain-Chatchat/blob/master/docs/img/langchain+chatglm.png)
-![文档角度](https://github.com/chatchat-space/Langchain-Chatchat/blob/master/docs/img/langchain+chatglm2.png)
+<p aligin='center'>LangChain-Chatchat原理<img src='./asserts/LangChain-Chatchat原理.png'></p>
+<p aligin='center'>文档角度<img src='./asserts/langchain+chatglm2.png'></p>
 
 #### 源代码开发部署
 + 项目文件
