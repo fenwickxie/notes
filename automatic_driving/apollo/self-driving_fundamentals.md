@@ -131,34 +131,96 @@ columns 3
   end
 ```
 
-1. 路线规划（Route planning）  
-+ 全局路径规划，侧重于如何从地图上的A前往B  
- 
-```mermaid
-block-beta
-columns 4
-  block:block0
-    columns 2
-    blockArrowId1<["地图数据"]>(right):1
-    block:block1:1
+#### 路线规划（Route planning）  
+> + **全局路径规划，侧重于如何从地图上的A前往B**  
+  
+  ```mermaid
+  block-beta
+  columns 4
+    block:block0:2
       columns 1
-      A["公路网"]
-      B["实时交通信息"]
+      block:block00:1
+        columns 2
+        block:block000:1
+          columns 1
+          A("公路网"):1
+          B("实时交通信息"):1
+        end
+        blockArrowId1<["地图数据"]>(right):1
+      end
+      blockArrowId3<["当前位置"]>(right):1
+      blockArrowId4<["目的地"]>(right):1
     end
-    blockArrowId3<["当前位置"]>(right):1
-  end
 
-  block:block2:1
-    columns 1
-    C((("路线规划")))
-  end
-  blockArrowId2<["可行驶路线"]>(right):1
-```
+    block:block1:1
+      C((("路线规划")))
+    end
 
-1. 轨迹规划（Trajectory planning）  
-+ 局部路径规划，细致决策以生成免碰撞和舒适的可行驶轨迹  
-  + 该轨迹由一系列点定义
-    + 每个点都有一个关联速度
-    + 到达此点的时间
- 
+    blockArrowId2<["可行驶路线"]>(right):1
+
+  ```
+
+1. 世界到图  
+   + 将地图数据格式化为“graph”数据结构  
+     + 把线抽象成点，把点精细成线  
+     + **节点**：表示路段  
+     + **边**：表示路段间的连接  
+2. 网格(以A*算法为例)  
+   + 计算初始节点到候选节点的成本$g$   
+     + 现实世界表示当前位置到下一候选位置的困难程度
+   + 计算候选节点到目的地的估计成本（启发式成本）$h$  
+     + 现实世界表示候选位置到目的地的距离
+   + $minimize\{f=g+h\}$  
+
+> **Important**  
+> 从路线到轨迹
+
+#### 轨迹规划（Trajectory planning）  
+> + **局部路径规划，细致决策以生成免碰撞和舒适的可行驶轨迹**  
+>   + 该轨迹由一系列点定义
+>     + 每个点都有一个关联速度
+>     + 每个点都有到达此点的时间戳（X,Y,T）
+
+1. 轨迹评估
+   + 评估轨迹是否满足车辆动力学和物理约束
+   + 评估轨迹是否安全、舒适、高效
+2. 轨迹选择  
+   + 成本函数：选择成本最低的轨迹  
+     + 偏离路中心程度  
+     + 潜在碰撞风险  
+     + 超出速度限制  
+     + 轨迹曲率和加速度影响乘客舒适性  
+   + 不同场景使用不同的成本函数   
+     + 应对不同驾驶风格和驾驶场景  
+3. Frenet坐标系  
+   + 将道路抽象为一条直线，将车辆抽象为一条曲线  
+     + 纵坐标表示在道路中的行驶距离  
+     + 横坐标表示汽车偏离中心线的距离  
+   + ![Frenet coordinate system](<asserts/Frenet coordinate system.png>)  
+4. 路径-速度解耦规划  
+   + 路径规划
+     + 生成车辆可行驶的候选路径曲线  
+       > 使用成本函数进行评估  
+   + 速度规划  
+     + 速度曲线：在路径上每个点上的速度，速度序列  
+   + 路径生成与选择  
+     + 将路段分割成单元格  
+     + 对每个单元格内的点随机采样一个点  
+     + 将每个点按位置顺序连接起来  
+     + 重复以上过程构建多个候选路径  
+     + 使用成本函数对这些路径进行评估  
+
+<p style="color:red;">
+<ul>
+<ul>
+<ul>
+<ul>
+      <li> 与车道中心的偏离  
+      <li> 潜在碰撞风险  
+      <li> 超出速度限制
+</ul>
+</ul>
+</ul>
+</p>
+
 ## 控制
