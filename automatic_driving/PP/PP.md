@@ -4,63 +4,44 @@
 
 ```mermaid
 mindmap
-  root(路径规划与轨迹跟踪)
-    自动驾驶汽车定位-感知-规划-决策-控制概述
-      定位
-        绝对定位——GPS卫星定位
-        相对定位——初始姿态基础上加速度的时间积分
-      感知
-        环境感知——借助各种传感器，感知环境信息和车辆信息
-        多模态融合是难点
-      规划
-        对未来时域、空域的车辆一系列动作的计划
-        全局（宏观）路径规划——已知全局地图，规划车辆当前位置到目的地的路径
-        局部（微观）路径规划——根据环境感知信息，规划当前实时行驶路径，以实现换道、转弯、躲避障碍物等行为
-      决策
-        根据定位、感知、及路径规划信息，决定行驶策略（路线选择、车道选择、是否跟车等等）
-      控制
-        转向
-        驱动
-        制动
-    全局路径规划
-      基于搜索的路径规划
-        BFS(Breadth-First Searching，广度优先搜索)
-        DFS(Depth-First Searching，深度优先搜索)
-        Best-First Searching(最佳优先搜索)
-        Dijkstra
-        ACO(Ant Colony Optimization, 蚁群算法)
-        A\*
-        Bidirectional A\*
-        Anytime Repairing A\*
-        Learning Real-time A\* (LRTA*)
-        Real-time Adaptive A\* (RTAA*)
-        Lifelong Planning A\* (LPA*)
-        Dynamic A\* (D\*)
-        D\* Lite
-        Anytime D\*
-      基于采样的路径规划
-        RRT
-        RRT-Connect
-        Extended-RRT
-        Dynamic-RRT
-        RRT\*
-        Informed RRT\*
-        RRT* Smart
-        Anytime RRT\*
-        Closed-Loop RRT\*
-        Spline-RRT\*
-        Fast Marching Trees (FMT\*)
-        Batch Informed Trees (BIT\*)
-    局部路径规划
+  root(路径规划)
+    自动驾驶规划概述
+      对未来时域、空域的车辆一系列动作的计划
+      全局（宏观）路径规划——已知全局地图，规划车辆当前位置到目的地的路径
+      局部（微观）路径规划——根据环境感知信息，规划当前实时行驶路径，以实现换道、转弯、躲避障碍物等行为
+    基于搜索的路径规划
+      BFS(Breadth-First Searching，广度优先搜索)
+      DFS(Depth-First Searching，深度优先搜索)
+      Best-First Searching(最佳优先搜索)
+      Dijkstra
+      ACO(Ant Colony Optimization, 蚁群算法)
+      A\*
+      Bidirectional A\*
+      Anytime Repairing A\*
+      Learning Real-time A\* (LRTA*)
+      Real-time Adaptive A\* (RTAA*)
+      Lifelong Planning A\* (LPA*)
+      Dynamic A\* (D\*)
+      D\* Lite
+      Anytime D\*
+    基于采样的路径规划
+      RRT
+      RRT-Connect
+      Extended-RRT
+      Dynamic-RRT
+      RRT\*
+      Informed RRT\*
+      RRT* Smart
+      Anytime RRT\*
+      Closed-Loop RRT\*
+      Spline-RRT\*
+      Fast Marching Trees (FMT\*)
+      Batch Informed Trees (BIT\*)
       多项式曲线法
       势场法
       贝塞尔曲线法
       B样条曲线法
-    轨迹跟踪与控制
-      纯跟踪法
-      Stanley法
-      PID
-      MPC
+
 
 ```
 
