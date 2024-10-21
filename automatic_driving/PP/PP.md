@@ -252,7 +252,7 @@ $$
 ### 动态规划算法
 
 把多阶段决策问题转换为一系列单阶段最优化问题
-<p align='center'><img src='../asserts/多阶段决策示意图.jpeg' width='30%'></p>
+<p align='center'><img src='./asserts/多阶段决策示意图.jpeg' width='30%'></p>
 
 + 逆向寻优，正向求解
 + DP算法本质由三层循环构成
@@ -260,14 +260,14 @@ $$
   + 第二层遍历第i个阶段的每个状态
   + 第三层循环遍历第i+1阶段的每个状态
 
-<p align='center'><img src='../asserts/DP.jpeg' width='30%'></p>
+<p align='center'><img src='./asserts/DP.jpeg' width='30%'></p>
 
 
 
 ### <font color=Red>**A\***</font>
 
 A\*算法是一种启发式搜索算法，它结合了Dijkstra算法和贪婪最佳优先搜索算法的优点。A\*算法通过估计从当前节点到目标节点的代价来动态调整搜索方向，从而更快地找到最佳路径。
-<p align='center'><img src='../asserts/A_star.webp' width='30%'></p>
+<p align='center'><img src='./asserts/A_star.webp' width='30%'></p>
 
 + 优点：速度快；可以处理启发式信息；可以找到最短路径
 + 缺点：可能会陷入局部最优解
@@ -279,7 +279,7 @@ A\*算法是一种启发式搜索算法，它结合了Dijkstra算法和贪婪最
 
 ### Anytime Repairing A\*
 
-<p align='center'><img src='../asserts/ARA_star.webp' width='30%'></p>
+<p align='center'><img src='./asserts/ARA_star.webp' width='30%'></p>
 
 + 优点：可以在任何时候停止搜索并返回最佳路径；可以处理启发式信息
 + 缺点：可能会陷入局部最优解
@@ -322,12 +322,12 @@ A\*算法是一种启发式搜索算法，它结合了Dijkstra算法和贪婪最
 
 RRT（Rapidly-exploring Random Tree）算法是一种适用于高维空间的路径规划算法，它通过随机采样和不断扩展树形结构来搜索路径
   
-<p align='center'><img src='../asserts/rrt_star.webp' width='30%'></p>
+<p align='center'><img src='./asserts/rrt_star.webp' width='30%'></p>
 
 + 优点：适用于高维空间；能够有效处理复杂环境；运算速度较快
 + 缺点：无法保证找到最优解；生成的路径可能不是最短路径;算法的运算效率不高，随机树搜索漫无目的
 
-<p align='center'><img src='../asserts/rrt_algorithm.webp' width='30%'></p>
+<p align='center'><img src='./asserts/rrt_algorithm.webp' width='30%'></p>
 
 + RANDOM_STATE()函数在设定的环境内部产生随机点
 + NEAREST_NEIGHBOR()函数遍历随机树，找出距离随机点最近的节点
@@ -342,7 +342,7 @@ RRT（Rapidly-exploring Random Tree）算法是一种适用于高维空间的路
   为了高算法的效率，希望随机树的搜索并不是完全漫无目的的，希望随机树尽可能向着目标方向搜索，以加快搜索速度。
 具体的操作方法是：人为的引导随机点的生成。在产生随机点$x_{rand}$时，以一定的概率选取目标点作为循环中的$x_{rand}$，即$x_{rand}=x_{goal}$。
 $x_{rand}$在随机树扩展中相当于给定一个扩展的方向，以一定的概率将目标点作为$x_{rand}$，就等价于驱使随机树向着目标方向扩展，将图1展示的算法流程中RANDOM_STATE()函数改写为如下形式：
-<p align='center'><img src='../asserts/gb_rrt.webp', width=30%></p>
+<p align='center'><img src='./asserts/gb_rrt.webp', width=30%></p>
 
 ### RRT-Connect
 
@@ -356,7 +356,7 @@ $x_{rand}$在随机树扩展中相当于给定一个扩展的方向，以一定�
 
 ### Dynamic-RRT
 
-<p align='center'><img src='../asserts/d_rrt.webp', width=30%></p>
+<p align='center'><img src='./asserts/d_rrt.webp', width=30%></p>
 
 + 优点：能够处理动态环境中的路径规划问题；适用于移动机器人和无人机等领域
 + 缺点：运算速度较慢；路径质量可能较差
@@ -600,7 +600,7 @@ class RrtStarSmart:
 
 ### Closed-Loop RRT*
 
-<p align='center'><img src='../asserts/clrrt.webp', width=30%></p>
+<p align='center'><img src='./asserts/clrrt.webp', width=30%></p>
 
 + 优点：能够处理非完整动力学系统和约束条件；路径质量较高
 + 缺点：运算速度较慢；可能需要大量的存储空间
@@ -612,7 +612,7 @@ class RrtStarSmart:
 
 ### Fast Marching Trees (FMT*)
 
-<p align='center'><img src='../asserts/fmt.webp', width=30%></p>
+<p align='center'><img src='./asserts/fmt.webp', width=30%></p>
 
 + 优点：运算速度快；能够找到最短路径
 + 缺点：路径质量可能较差；在高维空间中效果可能不理想
