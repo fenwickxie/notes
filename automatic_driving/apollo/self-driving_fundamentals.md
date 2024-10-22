@@ -103,26 +103,33 @@ flowchart LR
     + Over-The-Air, OTA  
     + 智能语音系统DuerOS
 
-## 高精地图
+## 高精地图  
 
-## 定位
+## 定位  
 
-## 感知
+## 感知  
 
-## 预测
+## 预测  
 
 ## 规划
 
 ### 简介
 
 ```mermaid
+---
+config:
+  theme: default
+  themeVariables:
+    fontFamily: 'Times new Roman'
+    fontSize: 14px
+---
 block-beta
 columns 3
   block:block1:1
     columns 1
     A[["高精地图"]] B[["定位"]] D[["预测"]]
   end
-  blockArrowId<["&nbsp;&nbsp;&nbsp;"]>(right)
+  blockArrowId<["&nbsp;&nbsp;规划"]>(right)
   block:block2:1
     columns 1
     space
@@ -131,34 +138,41 @@ columns 3
   end
 ```
 
-#### 路线规划（Route planning）  
+### 路线规划（Route planning）  
 > + **全局路径规划，侧重于如何从地图上的A前往B**  
   
-  ```mermaid
-  block-beta
-  columns 4
-    block:block0:2
-      columns 1
-      block:block00:1
-        columns 2
-        block:block000:1
-          columns 1
-          A("公路网"):1
-          B("实时交通信息"):1
-        end
-        blockArrowId1<["地图数据"]>(right):1
+```mermaid
+---
+config:
+  theme: default
+  themeVariables:
+    fontFamily: 'Times new Roman'
+    fontSize: 14px
+---
+block-beta
+columns 4
+  block:block0:2
+    columns 1
+    block:block00:1
+      columns 2
+      block:block000:1
+        columns 1
+        A("公路网"):1
+        B("实时交通信息"):1
       end
-      blockArrowId3<["当前位置"]>(right):1
-      blockArrowId4<["目的地"]>(right):1
+      blockArrowId1<["地图数据"]>(right):1
     end
+    blockArrowId3<["当前位置"]>(right):1
+    blockArrowId4<["目的地"]>(right):1
+  end
 
-    block:block1:1
-      C((("路线规划")))
-    end
+  block:block1:1
+    C((("路线规划")))
+  end
 
-    blockArrowId2<["可行驶路线"]>(right):1
+  blockArrowId2<["可行驶路线"]>(right):1
 
-  ```
+```
 
 1. 世界到图  
    + 将地图数据格式化为“graph”数据结构  
@@ -175,7 +189,7 @@ columns 3
 > **[!NOTE]**  
 > 从路线到轨迹
 
-#### 轨迹规划（Trajectory planning）  
+### 轨迹规划（Trajectory planning）  
 > + **局部路径规划，细致决策以生成免碰撞和舒适的可行驶轨迹**  
 >   + 该轨迹由一系列点定义
 >     + 每个点都有一个关联速度
@@ -204,18 +218,23 @@ columns 3
      + 生成车辆可行驶的候选路径曲线  
        > 使用成本函数进行评估  
      + 路径生成与选择  
-       + 将路段分割成单元格  
-       + 对每个单元格内的点随机采样一个点  
-       + 将每个点按位置顺序连接起来  
-       + 重复以上过程构建多个候选路径   
-       + 使用**成本函数**对这些路径进行评估  
-  <font color="red">   
-          > + **与车道中心的偏离**  
-          > + **与碰撞物的距离**  
-          > + **速度和曲率的变换**  
-          > + **对车辆的压力**  
-          > + **...**  
-  </font>  
+       + 基于图搜索的方法
+         + 将路段分割成单元格  
+         + 对每个单元格内的点随机采样一个点  
+         + 将每个点按位置顺序连接起来  
+         + 重复以上过程构建多个候选路径   
+         + 使用**成本函数**对这些路径进行评估  
+<font color="red">   
+            > + **与车道中心的偏离**  
+            > + **与碰撞物的距离**  
+            > + **速度和曲率的变换**  
+            > + **对车辆的压力**  
+            > + **...**  
+</font>  
+       + 基于空间采样的方法  
+       + 基于参数曲线的方法  
+       + 基于数值最优化方法  
+       + 基于轨迹择优的方法  
    + 速度规划  
      > **<font color="red">速度曲线</font>**：在路径上每个点上的速度，速度序列  
      + ST图  
@@ -307,4 +326,88 @@ columns 3
      > + **本车道和目标车道均能产生一条最优轨迹**
      > + **给换道轨迹的cost上增加额外的车道优先级的cost，再将两条轨迹比较，选择cost较小的那条即可**
    
-## 控制
+## 控制  
+### 简介  
+> 控制是驱使车辆前行的策略  
+
++ 控制器的要求
+  1. 控制其必须精准，避免偏离目标轨迹  
+  2. 控制策略必须具备可行性  
+  3. 考虑平稳性、舒适性 ，驱动应当连续  
+
++ **<font color="red">控制流程</font>**  
+
+  ```mermaid
+  ---
+  config:
+    theme: default
+    themeVariables:
+      fontFamily: 'Times new Roman'
+      fontSize: 14px
+  ---
+  block-beta
+  columns 5
+    block:block00:1
+      A((("规划模块")))
+    end
+
+    blockArrowId1<["目标轨迹"]>(right):1
+
+    block:block02:1
+      D((("&nbsp;&nbsp;控制器&nbsp;&nbsp;")))
+    end
+
+    blockArrowId2<["车辆状态"]>(left):1
+    block:block03:1
+      columns 1
+      F((("&nbsp;&nbsp;定位模块&nbsp;&nbsp;")))
+      G((("内部传感器")))
+    end
+    space:5
+    space:1
+    block:block04:3
+      columns 3
+      H("转向"):1
+      I("加速"):1
+      J("制动"):1
+    end
+    space:1
+    space:5
+    E("实际轨迹"):5
+    
+    block02--"控制器输出的是控制输入"-->block04
+    block04--"使车辆通过目标路径点"-->E
+    E --"实际轨迹"-->block03
+  ```
+  
+  + **目标轨迹**：由规划模块生成，包含一系列路径点  
+    + 每个路径点指定一个位置 $(x,y)$ 和一个参考速度 $v$  
+    + 每个时间步都对轨迹进行更新  
+  + **车辆状态**：由定位模块和内部传感器获取
+    + 车辆当前位置、速度、加速度、转向等  
+
+### PID
+> + *Proportion Integration Differentiation，比例积分微分控制*  
+> + 线性算法，对于复杂系统效果不佳  
+>   + 需要建立不同的PID控制器控制不同的物理量（转向、加速等），难以将横向控制和纵向控制结合  
+>   + 依赖于实时误差测量，实时性难以保证  
++ 比例控制  
+  + 致力于使运动达到目标速度
+  + $a=-K_{p}e$  
++ 微分控制  
+  + 致力于使运动处于稳定状态  
+  + $a=-K_{p}e-K_{d}\frac{de}{dt}$  
+    + 增加阻尼项减少控制器输出的变化速度  
++ 积分控制  
+  + 负责纠正系统性错误,对系统累积误差进行惩罚  
+  + $a=-K_{p}e-K_{d}\frac{de}{dt}-K_{i}\int edt$
+
+
+### LQR
+> Linear Quadratic Regulator，线性二次调节器
+
+
+
+### MPC
+> Model Predictive Control，模型预测控制
+

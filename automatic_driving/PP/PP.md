@@ -5,11 +5,11 @@
 ```mermaid
 mindmap
   root(路径规划)
-    自动驾驶规划概述
+    规划概述
       对未来时域、空域的车辆一系列动作的计划
-      全局（宏观）路径规划——已知全局地图，规划车辆当前位置到目的地的路径
-      局部（微观）路径规划——根据环境感知信息，规划当前实时行驶路径，以实现换道、转弯、躲避障碍物等行为
-    基于搜索的路径规划
+      全局路径规划——已知全局地图，规划车辆当前位置到目的地的路径
+      局部路径规划——根据环境感知信息，规划当前实时行驶路径，以实现换道、转弯、躲避障碍物等行为
+    基于图搜索的路径规划
       BFS(Breadth-First Searching，广度优先搜索)
       DFS(Depth-First Searching，深度优先搜索)
       Best-First Searching(最佳优先搜索)
@@ -24,7 +24,7 @@ mindmap
       Dynamic A\* (D\*)
       D\* Lite
       Anytime D\*
-    基于采样的路径规划
+    基于空间采样的路径规划
       RRT
       RRT-Connect
       Extended-RRT
@@ -37,50 +37,52 @@ mindmap
       Spline-RRT\*
       Fast Marching Trees (FMT\*)
       Batch Informed Trees (BIT\*)
+    基于参数曲线的方法
       多项式曲线法
-      势场法
       贝塞尔曲线法
       B样条曲线法
+    基于轨迹择优的方法
+      
 
 
 ```
 
-+ 全局路径规划
-  + 基于搜索的路径规划
-    + BFS(Breadth-First Searching，广度优先搜索)
-    + DFS(Depth-First Searching，深度优先搜索)
-    + Best-First Searching(最佳优先搜索)
-    + **Dijkstra**
-    + **ACO(Ant Colony Optimization, 蚁群算法)**
-    + **A\***
-    + Bidirectional A\*
-    + Anytime Repairing A\*
-    + Learning Real-time A\* (LRTA*)
-    + Real-time Adaptive A\* (RTAA*)
-    + Lifelong Planning A\* (LPA*)
-    + Dynamic A\* (D\*)
-    + D\* Lite
-    + Anytime D\*
-  + 基于采样的路径规划
-    + RRT
-    + RRT-Connect
-    + Extended-RRT
-    + Dynamic-RRT
-    + RRT\*
-    + Informed RRT\*
-    + RRT* Smart
-    + Anytime RRT\*
-    + Closed-Loop RRT\*
-    + Spline-RRT\*
-    + Fast Marching Trees (FMT\*)
-    + Batch Informed Trees (BIT\*)
-+ 局部路径规划
-  + 多项式曲线法
-  + 势场法
-  + 贝塞尔曲线法
-  + B样条曲线
++ 基于图搜索的路径规划
+  + BFS(Breadth-First Searching，广度优先搜索)  
+  + DFS(Depth-First Searching，深度优先搜索)  
+  + Best-First Searching(最佳优先搜索)  
+  + **Dijkstra**  
+  + **ACO(Ant Colony Optimization, 蚁群算法)**  
+  + **A\***  
+  + Bidirectional A\*  
+  + Anytime Repairing A\*  
+  + Learning Real-time A\* (LRTA*)  
+  + Real-time Adaptive A\* (RTAA*)  
+  + Lifelong Planning A\* (LPA*)  
+  + Dynamic A\* (D\*)  
+  + D\* Lite  
+  + Anytime D\*  
++ 基于空间采样的路径规划  
+  + RRT  
+  + RRT-Connect  
+  + Extended-RRT  
+  + Dynamic-RRT  
+  + RRT\*  
+  + Informed RRT\*  
+  + RRT* Smart
+  + Anytime RRT\*  
+  + Closed-Loop RRT\*  
+  + Spline-RRT\*  
+  + Fast Marching Trees (FMT\*)  
+  + Batch Informed Trees (BIT\*)  
++ 基于参数曲线的路径规划  
+  + 多项式曲线法    
+  + 贝塞尔曲线法  
+  + B样条曲线  
++ 基于数值最优化的路径规划  
++ 基于轨迹择优的路径规划  
 
-## 基于搜索的路径规划
+## 基于图搜索的路径规划
 
 通过搜索图形结构来找到最短或最优的路径，其中 A\* 是最为常用和经典的算法之一
 
@@ -314,7 +316,7 @@ A\*算法是一种启发式搜索算法，它结合了Dijkstra算法和贪婪最
 + 优点：可以在任何时候停止搜索并返回最佳路径；可以处理动态环境；可以处理启发式信息
 + 缺点：可能会陷入局部最优解。
 
-## 基于采样的路径规划
+## 基于空间采样的路径规划
 
 适用于复杂环境中的路径规划，如机器人导航、无人驾驶和物流配送等领域
 
@@ -621,3 +623,22 @@ class RrtStarSmart:
 
 + 优点：通过批量采样提高搜索效率；能够找到最优路径
 + 缺点：运算速度较慢；可能需要大量的存储空间
+
+## 基于参数曲线的路径规划  
+### 多项式曲线法  
++ 
+
+### 贝塞尔曲线法  
++ 
+  
+### B样条曲线  
++ 
+
+
+## 基于数值最优化的路径规划
+
+### 
+
+## 基于轨迹择优的路径规划
+
+###
