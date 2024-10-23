@@ -312,16 +312,16 @@ columns 4
      + <p align='left'><img src='asserts/trajectory generation.png' width=60%></p>
      
      ```mermaid
-     graph LR
-     subgraph 轨迹图
-       direction TB
-       A[ST轨迹图]
-       B[SL轨迹图]
-       A ~~~ B
-     end
-     轨迹图 ==通过S值匹配合并==> C[笛卡尔坐标系]
+      graph LR
+      subgraph 轨迹图
+        direction TB
+        A[ST轨迹图]
+        B[SL轨迹图]
+        A ~~~ B
+      end
+      轨迹图 ==通过S值匹配合并==> C[笛卡尔坐标系]
+      ```
 
-     ```
      > + **对于换道场景，Lattice算法对目标车道对应的参考线做一次采样+选择的流程**
      > + **本车道和目标车道均能产生一条最优轨迹**
      > + **给换道轨迹的cost上增加额外的车道优先级的cost，再将两条轨迹比较，选择cost较小的那条即可**
@@ -404,10 +404,93 @@ columns 4
 
 
 ### LQR
-> Linear Quadratic Regulator，线性二次调节器
+> Linear Quadratic Regulator，**线性**二次调节器
+> 基于模型的控制器  
+> 使用车辆的状态使误差最小化  
++ 用于横向控制的 $\color{red}{\bold{车辆状态集合x=\begin{bmatrix}cte\\\dot{cte}\\\theta\\\dot{\theta}\end{bmatrix}}}$   
+  + 横向误差 $cte$   
+  + 横向误差的变化率 $\dot{cte}$   
+  + 朝向误差 $\theta$  
+  + 朝向的变化率 $\dot{\theta}$  
++ 用于横向控制的 $\color{red}{\bold{控制输入集合u=\begin{bmatrix}steering\\throttle\\brake\end{bmatrix}}}$   
+  + 转向 $steering$  
+  + 加速 $throttle$   
+  + 制动 $brake$   
 
+$$
+\begin{align}
+\dot{x} &= Ax + Bu \\
+\Delta{\dot{x}} &= A\Delta{x} + B\Delta{u} 
+\end{align}
+$$
+
+$$
+\begin{equation}
+\begin{bmatrix}\dot{cte}\\\ddot{cte}\\\dot{\theta}\\\ddot{\theta}\end{bmatrix} = A\begin{bmatrix}cte\\\dot{cte}\\\theta\\\dot{\theta}\end{bmatrix} + B \begin{bmatrix}steering\\throttle\\brake\end{bmatrix} \\
+\end{equation}
+$$
+
+> + 捕捉当前状态的变化 $\dot{x}$ 如何受当前状态 $x$ 和控制输入 $u$ 的影响  
+> + 尽可能少的使用控制输入，以降低成本  
+>   + 保持误差和控制输入的运行总和  
+>   + 当前状态误差的负值会由控制输入的正值抵消  
+> + 将当前状态 $x$ 乘以自身构造二次项，可抵消负值   
+
+$$
+\begin{align}
+& w_{1}cte^{2}+w_{2}\dot{cte}^{2}+w_{3}\theta^{2}+w_{4}\dot{\theta}^{2}+\ldots \\
+& cost = \int_{0}^{\infty} \left( x^{T}Qx + u^{T}Ru\right)dt  \\
+\end{align} 
+$$
+
+> Q、R表示权重矩阵
+
+$$
+\begin{align}
+  & u=Kx \\
+\end{align}
+$$
+
+> + $K=-R^{-1}B^{T}P$ 为反馈增益矩阵，即为控制器  
+> + [推导过程](https://blog.csdn.net/qq_36133747/article/details/123413115)   
+> + [LQR](https://zhuanlan.zhihu.com/p/139145957)
 
 
 ### MPC
-> Model Predictive Control，模型预测控制
+> Model Predictive Control，模型预测控制，依赖于数学优化，可分为三个步骤  
+
+```mermaid
+---
+config:
+  theme: default
+  themeVariables:
+    fontFamily: 'Times new Roman'
+    fontSize: 14px
+---
+graph LR
+  A[车辆状态]
+  B[控制输入]
+  C[车辆模型]
+  A --> C
+  B --> C
+  C --> D[车辆轨迹]
+
+```
+
+1. 建立车辆模型  
+   1. 估计将一组控制输入应用于车辆时会发生什么  
+2. 使用优化引擎计算有限时间范围内的控制输入序列  
+   1. 权衡MPC预测未来的时间长度  
+      1. 短时间范围，准确度低但快速
+      2. 长时间范围，准确度高但慢速
+   2. 优化引擎搜索最佳控制输入  
+      1. 通过搜索密集数学空间寻找最佳解决方案  
+      2. 依赖于车辆模型的约束条件以减小搜索范围  
+      3. 根据成本函数对轨迹进行评估  
+         1. 估计偏差
+         2. 加速度  
+         3. 舒适度  
+3. 执行计算出的序列中的第一组控制输入  
+
+> 在每个时间步不断重新评估控制输入的最优序列  
 
