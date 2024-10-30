@@ -240,11 +240,310 @@ $$
 
 ### 视觉定位
 
+通过视觉传感器获取图像，根据图像中物体和地图中此物体位置信息推断车辆可能的位置  
+> 如采集到右侧连续出现两棵树，根据地图中会连续出现两颗树的位置得到车辆可能位置  
+
+```mermaid
+---
+title: 粒子滤波
+---
+flowchart LR
+  A[3D地图/GPS] 
+  B[图像]
+  C((匹配))
+  A --> C
+  B --> C
+  D[定位]
+  C --概率--> D
+```
+
 ### Apollo定位  
+
+```mermaid
+---
+title: 多传感器融合定位
+---
+flowchart LR
+  F[GNSS 定位]
+  G[雷达定位]
+  A[GPS] --> F  
+  B[IMU] --> F 
+  E[高精地图] --> F & G
+  C[激光雷达] -->  G
+  D[毫米波雷达] -->  G 
+
+
+  
+  H["`**位置
+  速度**`"]
+  I["`**位置
+  行进方向**`"]
+
+  K[惯性导航]--用于Kalman预测步骤-->J[(卡尔曼滤波)]
+  H--预测-->K--更新-->H
+
+  F --> H--用于Kalman测量结果更新步骤--> J
+  G --> I--用于Kalman测量结果更新步骤---> J
+
+```
+
+> **<font color='red'>扩展知识：[卡尔曼滤波](https://www.kalmanfilter.net/CN/default_cn.aspx)</font>**
 
 ## 感知(Perception)  
 
+```mermaid
+---
+title: 感知任务
+---
+flowchart LR
+  A[相机]--计算机视觉-->C[感知环境]
+  B[激光雷达]--计算机视觉-->C
+  C--where-->D[Detection]
+  C--what-->E[Classification]
+  C--when-->F[Tracking]
+  C--contour-->G[Segmentation]
+```
+
+### 激光雷达图像  
++ 环境的点云表征  
+  + 形状、表面纹理  
++ 点云聚类、分析  
+  + 检测、跟踪、分类  
+### 机器学习  
++ 有监督学习  
+  + 数据+真值标签  
++ 无监督学习  
+  + 无标签数据  
++ 半监督学习  
+  + 少量有标签数据+大量无标签数据  
++ 强化学习  
+  + 通过不同方法解决问题，衡量最佳方法  
+    + 奖励机制  
+### 深度学习
+  + 多个检测头实现多任务（检测+分类）  
+### 跟踪  
+  + 对每帧图像中的每个对象进行检测并用边界框标识  
+  + 避免因遮挡造成的检测失败  
+  + 保留对象身份  
+    + 匹配不同帧中特征相似度最高的对象  
+      + 图像特征
+      + 对象位置速度等特征    
+    + **对象位置+预测模块--->估计下一个时间步的速度位置--->帮助识别下一帧对应对象**  
+### 分割  
+> 逐像素分类
+
+<p align="center"><img src='asserts/fcn.png' width=60%></p>
+
+### Apollo感知  
+```mermaid
+---
+title: Apollo3D对象感知
+config:
+  theme: default
+  themeVariables:
+    fontFamily: 'Times New Roman'
+    fontSize: 14px
+---
+flowchart LR
+  A[HD-MAP]--ROI过滤，缩小检测范围-->B[点云] & C[图像]-->D[检测网络]-->E[三维边界框] & F[分类] --检测跟踪关联--> G[跟踪]
+```
+
+---
+
+
+```mermaid
+---
+title: Apollo交通灯感知
+config:
+  theme: default
+  themeVariables:
+    fontFamily: 'Times New Roman'
+    fontSize: 14px
+---
+flowchart LR
+  A[HD-MAP]--交通灯位置-->B[摄像头]--场景图-->C[检测网络]--检测定位-->D[裁切] --交通灯图--> E[分类网络]--交通灯颜色-->F[车道关联]
+```
+
+---
+
+
+```mermaid
+---
+title: Apollo车道线和动态物体感知
+config:
+  theme: default
+  themeVariables:
+    fontFamily: 'Times New Roman'
+    fontSize: 14px
+---
+flowchart LR
+  A["图像"]-->B["YOLO"]-->C["车道线"]-->D["在线校准模块"] & E["虚拟车道"]
+  B-->F["物体追踪"]
+  G["雷达"]----> H["融合"]-->I["`
+  物体类型
+  距离
+  速度
+  朝向`"]-->J["跟随"]-->E-->K((("规划与控制模块")))
+  D-->E
+  F-->H
+```
+
+### 传感器数据比较  
+
+|  | 摄像头 | 激光雷达 |毫米波雷达 |摄像头+激光雷达+毫米波雷达|
+| :---: | :---: | :---: | :---: | :---: |
+| 检测 | :star::star: | :star::star::star: | :star::star: | :star::star::star: |
+| 分类 | :star::star::star: | :star::star: | :star: | :star::star::star: |
+| 可视范围 | :star::star: | :star::star: | :star::star::star: | :star::star::star: |
+| 车道追踪 | :star::star::star: | :star: | :star: | :star::star::star: |
+| 恶劣天气功能性 |:star: | :star::star: | :star::star::star: | :star::star::star: |
+| 恶劣光照功能性 | :star::star: | :star::star::star: | :star::star::star: | :star::star::star: |
+
+### **<font color="red">传感器融合</font>**
+
+```mermaid
+---
+title: 传感器融合
+config:
+  theme: default
+  themeVariables:
+    fontFamily: 'Times New Roman'
+    fontSize: 14px
+---
+flowchart LR
+  A@{ shape: lean-l, label: "激光雷达" }
+  B@{ shape: lean-r, label: "毫米波雷达" }
+  subgraph K["`**<font color="red">卡尔曼滤波</font>**`"]
+    direction TB
+    subgraph S["`**<font color="red">预测</font>**`"]
+      direction LR
+      E["当前位置"] & F["当前速度"] -->C["预测状态"]
+    end
+
+    subgraph M["`**<font color="red">更新</font>**`"]
+      direction LR
+      G["测得位置"] & H["测得速度"] -->D["更新预测结果"]
+    end
+    S <--> M
+    
+  end
+  A & B --> K
+
+```
+
+```mermaid
+---
+title: 同步/异步 传感器融合
+config:
+  theme: default
+  themeVariables:
+    fontFamily: 'Times New Roman'
+    fontSize: 14px
+---
+flowchart TB
+  A@{ shape: lean-l, label: "激光雷达数据" }
+  B@{ shape: lean-r, label: "毫米波雷达数据" }
+  C["数据类型转换"]
+  A & B --> C 
+  C--> D[激光雷达感知] & E[毫米波雷达感知]--> F[感知融合] --> G@{ shape: lean-r, label: "融合数据" }
+```
+> 同步融合同时更新来自不同传感器的测量结果  
+> 异步融合逐个更新接收到的传感器测量结果  
+
+
 ## 预测(Prediction)  
+
+### 简介  
+
+> + 预测是预测周围车辆、行人、自行车等移动物体的运动轨迹  
+>   + 实时性  
+>   + 准确性  
+> + 基于模型的  
+>   + 依赖于物理或行为模型来预测物体的行为
+> + 数据驱动的  
+>   + 基于大量历史数据，利用机器学习或深度学习技术来学习预测模型
+
+```mermaid
+flowchart LR
+  A["右转模型" ]-->C["右转轨迹"]
+  B["左转模型" ]-->D["左转轨迹"]
+  subgraph M["基于模型"]
+    direction LR
+    E["更新可能性"] --> F["预测轨迹"]
+  end
+  C & D --> M
+  
+  subgraph DD["基于数据"]
+    direction LR
+    H["机器学习"] --> I["预测轨迹"]
+  end
+  G["观测行为" ] --> M & DD
+  J["训练数据"]-->  DD
+```
+
+### 基于车道序列的预测  
+
+> + 将道路分为多个部分，每部分包括一个易于描述车辆运动的区域
+>   + 关注车辆在各区域间如何转换，不关注某区域内车辆的运行状况  
+>     <p align=center><img src="asserts/lane_sequence.png" width=50%></p>   
+>   + 将车辆行为划分为一组有限的模式组合，将这些组合描述为车道序列  
+
+### 障碍物状态  
++ 朝向  
++ 位置  
++ 速度  
++ 加速度    
++ 车道内物体的相对位置  
++ 前一时间间隔的状态信息  
+
+### 预测目标车道  
++ 车道序列框架生成轨迹  
+  + 预测车道序列之间的过渡  
+    > + 预测问题 ---简化---> 选择问题  
+    >   + 选择车辆最可能采取的车道顺序  
+    >   + 计算每个车道序列的概率
+    
+    ```mermaid
+    flowchart LR
+    A["车道序列"]  -->E["一系列车道段"] 
+    B["障碍物状态"] -->F["障碍物相关状态集"]
+    E & F --> C["模型"] --> D["车道序列选择概率"]
+    ```
+
+### RNN  
+> + RNN（循环神经网络）是一种神经网络，它能够处理时间序列数据   
+<p align=center><img src="asserts/rnn.png" width=50%></p>   
+
+```mermaid
+flowchart LR
+A["车道序列"] -->E@{ shape: processes, label: "一系列车道段" } -->G["RNN1"]
+
+B@{ shape: processes, label: "障碍物相关状态集"} -->F["RNN2"]
+
+G & F --> C["模型"] --> D["车道序列选择概率"]
+```
+
+### 轨迹生成  
+
+```mermaid
+---
+title: 障碍物轨迹生成方法
+config:
+  theme: default
+  themeVariables:
+    fontFamily: 'Times New Roman'
+    fontSize: 14px
+---
+flowchart LR
+A["预测得到车道序列"] -->B[设置约束条件] ~~~ H@{ shape: comment, label: "与车道中心线对齐
+无法实际执行轨迹
+当前速度
+当前加速度
+" } --> G["障碍物轨迹"]
+```
++ 应用于数学理论  
+  + 起始和终点物体的位置和方位作为运动模型的**初始状态**和**最终状态**  
+  + 根据初始状态和最终状态拟合**多项式模型**  
 
 ## 规划(Planning)
 
