@@ -13,6 +13,9 @@
   + 遮挡小  
 #### 感知  
   + 一种响应模式，系统对外界的响应    
+#### BEV感知 
+  + 建立在众多子任务上的一个概念  
+  + 包括分类、检测、分割等  
 
 ```mermaid
 ---
@@ -72,9 +75,6 @@ columns 8
   class id01,id02,id03,id04 core
 ```
 
-#### BEV感知 
-  + 建立在众多子任务上的一个概念  
-  + 包括分类、检测、分割等  
 #### BEV感知输入  
   + 包括毫米波雷达、激光点云雷达、相机图像等  
   + 根据输入不同有进一步划分不同类型BEV感知算法  
@@ -388,17 +388,103 @@ graph LR
   i0["点云数据"]-->i1["基于点的(point-based)"] & i2["基于体素的(voxel-based)"]-->i3["输出"]
   
 ```
-+ 基于点的(point-based)
-  + <p align=center><img src='asserts/pointnet++.png'></p>
++ 基于点的(point-based)  
+> 直接对点云数据进行特征提取，再进一步提取点的稀疏表示  
+  + <p align=center><img src='asserts/pointnet++.png' width=80%><br><a href="https://github.com/charlesq34/pointnet2" target="_blank" title="https://github.com/charlesq34/pointnet2">（例）Point Net++ </a></p>
+
++ 基于体素的(voxel-based)  
+> 先将点云数据划分为体素，通过三维卷积对体素进行特征提取，再进一步提取体素的稀疏表示  
+  + <p align=center><img src='asserts/voxelnet.png' width=80%><br><a href="https://github.com/steph1793/Voxelnet" target="_blank" title="https://github.com/steph1793/Voxelnet">（例）VoxelNet</a></p>
+
 ### 2D-3D  
+> 由环视图像，构建BEV视角特征  
+```mermaid
+graph LR
+  i0[2D]-->i1[3D]-->i2[BEV]
+  i0--"×"-->i2
+```
+
+$$
+Z_{c}\left[\begin{matrix}x\\y\\1\end{matrix}\right]=\left[\begin{matrix}f&0&0&0\\0&f&0&0\\0&0&1&0\end{matrix}\right]\left[\begin{matrix}X_{C}\\Y_{C}\\Z_{C}\\1\end{matrix}\right]
+$$
+
++ LSS(Lift, Splat,and Shoot)  
+  + <p align=center><img src='asserts/lss.png' width=100%><br><a href="https://github.com/nv-tlabs/lift-splat-shoot" target="_blank" title="https://github.com/nv-tlabs/lift-splat-shoot">（例）LSS</a></p>  
+  + lift模块做**深度分布**  
+  + splat做特征映射  
+  + shoot做结果预测  
+  + **离散深度估计**  
+    + 连续深度预测任务转换为分类任务  
++ Pseudo Lidar  
+  + <p align=center><img src='asserts/pseudo-lidar.png' width=100%><br><a href="https://github.com/mileyan/pseudo_lidar" target="_blank" title="https://github.com/mileyan/pseudo_lidar">（例）Pseudo Lidar</a></p>  
+  + **连续深度估计**——伪点云  
 
 ### 3D-2D  
+> 由3D到2D构建BEV空间  
 
+#### 显式映射 
+> 预先知道3D参考点,利用3D对象查询进行2D图像特征查询  
++ DETR3D 
+  + <p align=center><img src='asserts/detr3d.png' width=100%><br><a href="https://github.com/WangYueFt/detr3d" target="_blank" title="https://github.com/WangYueFt/detr3d">（例）DETR3D </a></p>  
++ FUTR3D(多模态)  
+    > 利用不同的骨干网络提取多模态特征，再根据查询点聚合多模态特征  
+    + <p align=center><img src='asserts/futr3d.png' width=100%><br><a href="https://github.com/Tsinghua-MARS-Lab/futr3d" target="_blank" title="https://github.com/Tsinghua-MARS-Lab/futr3d">（例）FUTR3D </a></p>  
+
+#### 隐式映射
+> 不知道3D参考点，不需要显式的2D-3D映射关系  
++ PETR3D  
+  + <p align=center><img src='asserts/petr3d.png' width=100%><br><a href="https://github.com/megvii-research/PETR" target="_blank" title="https://github.com/megvii-research/PETR">（例）PETR3D </a></p>
 ### BEV中的transformer  
 
-
+[各种注意力机制](https://www.cnblogs.com/wxkang/p/17133460.html)
+> + 通道注意力  
+>   + <p align=center><img src='asserts/channelattention.png' width=100%><br>channel attention</p>
+> + 空间注意力   
+>   + <p align=center><img src='asserts/stn.png' width=100%><br>spatial attention</p>  
+> + 混合注意力  
+>   + <p align=center><img src='asserts/cbam.png' width=100%><br>cbam</p>  
+>   + <p align=center><img src='asserts/cam.png' width=100%><br>cam</p>  
+>   + <p align=center><img src='asserts/sam.png' width=100%><br>cam</p>    
+> + 自注意力  
+>   + <p align=center><img src='asserts/self-attention.png' width=100%><br>self-attention</p>  
+ #### 自注意力机制  
+ > 计算给定序列的各位置之间的影响力大小  
+ > 查询向量Q、键向量K、值向量V，计算相似度  
+ + ViT(Vision Transformer)——图像分类  
+   + 将图像序列化表示，一张图片无重叠切分成固定尺寸的Patch  
+   + Position Embedding，将Patch的相对位置信息编码到向量中  
++ SwimTransformer——图像分类   
+  + ViT在全图进行划分Patch序列化并计算注意力，但常常目标在图像中占比并不大  
+  + 先划分Window，再在Window内划分Patch进行序列化，计算注意力  
++ **DETR——目标检测**  
+  + 将目标检测问题转化为一个直接回归问题  
+  + <p align=center><img src='asserts/detr.png' width=100%><br>detr</p>  
++ RT-DETR  
+  + 基于DETR（无NMS框架），同时引入基于CORV的主干网络和高效的混合编码器以获得实时速度  
+  + <p align=center><img src='asserts/rt-detr.png' width=100%><br>rt-detr</p>   
++ **DETR3D**  
+  + 基于DETR，将BEV视角下的3D目标检测问题转化为一个直接回归问题  
+  + <p align=center><img src='asserts/detr3d.png' width=100%><br><a href="https://github.com/WangYueFt/detr3d" target="_blank" title="https://github.com/WangYueFt/detr3d">（例）DETR3D </a></p> 
 ## BEV融合感知算法  
+> Lidar + Camera  
+> 模态信息的互补  
+### 融合方案  
++ 前融合(数据级融合)  
+  + 通过空间对其直接融合不同模态的原始传感器数据  
++ 深度融合(特征级融合)  
+  + 通过级联或元素相乘在特征空间中跨模态融合  
++ 后融合(目标级融合)  
+  + 将各模态模型的预测结果进行融合。作出最终决策  
+
++ <p align=center><img src='asserts/fusion_methods.png' width=70%><br>fusion_methods </p> 
+
+```mermaid
+graph LR
+
+```
 
 ## 基于环视camera的BEV感知算法  
+> Only Camera  
+
 
 ## BEV实战  
