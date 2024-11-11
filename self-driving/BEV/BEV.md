@@ -7,15 +7,15 @@
 ## BEV感知算法简介
 ### BEV感知算法的概念    
 #### BEV   
-  + Bird’s-Eye-View，鸟瞰图（俯视图）   
++ Bird’s-Eye-View，鸟瞰图（俯视图）   
   + 尺度变化小  
     + 网络对特征一致的目标表达能力更好  
   + 遮挡小  
 #### 感知  
-  + 一种响应模式，系统对外界的响应    
++ 一种响应模式，系统对外界的响应    
 #### BEV感知 
-  + 建立在众多子任务上的一个概念  
-  + 包括分类、检测、分割等  
++ 建立在众多子任务上的一个概念  
++ 包括分类、检测、分割等  
 
 ```mermaid
 ---
@@ -74,29 +74,27 @@ columns 8
   class id41,id42,id43,id44,id45,id46,id47 input
   class id01,id02,id03,id04 core
 ```
-
++ BEV感知算法通用组成部分  
+  + RGB/LiDAR特征提取模块  
+  + BEV特征构造模块  
+  + 检测头模块  
 #### BEV感知输入  
   + 包括毫米波雷达、激光点云雷达、相机图像等  
   + 根据输入不同有进一步划分不同类型BEV感知算法  
 ### BEV感知算法的数据形式    
-#### 纯图像  
-> + 三维世界映射到二维像素表示  
-> + 纹理丰富、成本低  
-> + 基于图像的任务、基础模型相对成熟，易扩展到BEV  
-> *涉及图像的方法使用的基本是图像处理框架中的一些通用网络，如resnet等*
-+ BEVFormer  
-<p align='center'><img src='asserts/bevformer.png'></p>
++ 纯图像  
+   + 三维世界映射到二维像素表示  
+   + 纹理丰富、成本低  
+   + 基于图像的任务、基础模型相对成熟，易扩展到BEV  
+     + *涉及图像的方法使用的基本是图像处理框架中的一些通用网络，如resnet、transformer等*
 
-#### 纯点云  
-> + 稀疏性  
-> + 无序性  
-> + 3D表征  
-+ 点云特征提取方法——采用一定的聚合方法，将点云数据聚合为特征图  
-  + 基于点的（point-based）：聚合关键点和其周围（一个球体空间内）点  
-  + 基于体素的（voxel-based）：聚合一定区域内的点  
-#### 图像 + 点云  
-+ BEVFusion  
-<p align='center'><img src='asserts/bevfusion.png'></p>
++ 纯点云  
+  + 稀疏性、无序性、3D表征  
+  + 点云特征提取方法——采用一定的聚合方法，将点云数据聚合为特征图  
+    + 基于点的（point-based）：聚合关键点和其周围（一个球体空间内）点  
+    + 基于体素的（voxel-based）：聚合一定区域内的点  
++ 图像 + 点云  
+
 
 ### BEV开源数据集  
 #### [KITTI-360](https://www.cvlibs.net/datasets/kitti-360/)  
@@ -184,14 +182,9 @@ end
 B--> 视角转换模块-->E[3D解码器检测头]
 ```
 
-+ BEVFormer  
-  + <p align='center'><img src='asserts/bevformer.png'></p>
-
 #### BEV Fusion  
 > **融合是在特征层面的融合**  
 
-+ BEVFusion  
-  + <p align='center'><img src='asserts/bevfusion.png'></p>
 
 ### BEV感知算法的优劣  
 
@@ -483,8 +476,63 @@ graph LR
 
 ```
 
+### 基础算法  
+#### [BEV-SAN](https://github.com/litwellchi/BEV-SAN)  
++ <p align=center><img src='asserts/bev-san.png' width=100%><br><a href="https://github.com/litwellchi/BEV-SAN" target="_blank" title="https://github.com/litwellchi/BEV-SAN">BEV-SAN </a></p>
++ 主要针对BEV特征构造模块的工作  
+  + 已有算法专注于高度维度展平BEV空间，导致**高度维度上的信息丢失**  
+  + 核心设计是**切片注意力网络(Slice Attention Network)**  
++ 选择特征的高度范围  
+  + 提出LIDAR-guided sampling for slice attention  
+  + 根据点云统计结果作为局部特征高度划分的依据  
++ 融合多级特征  
+  + 提出Fusion Transformer，同时融合全局和局部特征  
+
+#### BEVFusion  
+
++ BEV Fusion MIT
+  + <p align=center><img src='asserts/bevfusion_mit.png' width=100%><br><a href="https://github.com/mit-han-lab/bevfusion" target="_blank" title="https://github.com/mit-han-lab/bevfusion">bevfusion_mit</a></p> 
+
++ BEV Fusion 阿里  
+  + > 输入：多视角图像  
+    > 步骤 1：2D Backbone 提取基础图像特征  
+    > 步骤 2：FPN+ADP，多尺度特征融合  
+    > 步骤 3：2D➡3D 特征转换模块  
+    > 步骤 4：3D➡BEV 特征编码模块  
+    > 输出：Camera BEV Features  
+  + <p align=center><img src='asserts/bevfusion_ali.png' width=80%><br><a href="https://github.com/ADLab-AutoDrive/BEVFusion" target="_blank" title="https://github.com/ADLab-AutoDrive/BEVFusion">bevfusion_ali</a></p>   
+  + 相机支路  
+    + FPN+ADP  
+      + > 输入：基础图像特征   
+        > 步骤 1：每层特征使用 ADP 模块  
+        > 步骤 2：ADP 模块包括上采样、池化、卷积  
+        > 步骤 3：多层特征融合  
+        > 输出：多尺度融合特征  
+      + <p align=center><img src='asserts/fpn+adp.png' width=80%><br>fpn+adp模块</p>  
+    + 2D➡3D 特征转换  
+      + > 输入：多尺度融合特征  
+        > 步骤 1：深度分布估计  
+        > 步骤 2：2D 到 3D 投影计算  
+        > 输出：3D 伪体素特征  
+      + <p align=center><img src='asserts/2d23d.png' width=80%><br>2D➡3D特征转换</p>  
+  + 点云支路  
+    + 点云特征提取方案有基于点的、基于体素的，包括 PointPillars、CenterPoint、TransFusion等  
+    + <p align=center><img src='asserts/piontpillars.png' width=80%><br>PointPillars网络结构</p> 
+    + Pillar 是一个用于聚合特征的柱状空间，一个柱子包含 `N` 个点，每个点的特征是 `D` 维，，一个 3D 场景有 `P` 个柱子，则整个 3D 场景用柱子特征来表示就是 $P \times D \times N$   
+      + PointPillars 中默认 `D` 是一个 9 维量 
+        + $(x,y,z)$ 是点的坐标  
+        + $(x_{c},y_{c},z_{c})$ 是点所在 pillar 的中心点坐标  
+        + $(x_{p},y_{p})$ 是点距离柱子中心点的偏移量  
+          + > **为什么 PointPillars 不考虑 `z` 方向的偏移量？:question:**   
+            > PointPillars 主要用于处理从地面车辆（如自动驾驶汽车）收集的点云数据。在这类应用中，z 方向（垂直于地面）的变化通常不如 x 和 y 方向（水平方向）那么显著或重要。因此，z 方向的偏移可能被认为对模型的性能影响不大，而忽略它可以简化模型并减少计算需求。另一个可能的原因是在垂直方向上，点云数据可能展示出不同的分布特性，使得直接使用不如其他维度那么有效  
+        + 反射值 $r$ 表示点云中每个点的反射强度,反映了对象表面反射激光脉冲的能力  
 ## 基于环视camera的BEV感知算法  
 > Only Camera  
 
-
+### 基础算法  
+#### BEVFormer  
++ <p align='center'><img src='asserts/bevformer.png'></p>
+#### **DETR3D**  
++ 基于DETR，将BEV视角下的3D目标检测问题转化为一个直接回归问题  
++ <p align=center><img src='asserts/detr3d.png' width=100%><br><a href="https://github.com/WangYueFt/detr3d" target="_blank" title="https://github.com/WangYueFt/detr3d">DETR3D</a></p> 
 ## BEV实战  
