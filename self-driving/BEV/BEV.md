@@ -104,7 +104,7 @@ columns 8
     + $R$——相机畸变矫正矩阵  
     + $P$——相机内参矩阵，3D到2D映射  
   
-<p align='center'><img src='asserts/kitti_annotation.png' width=50%></p>  
+<p align='center'><img src='assets/kitti_annotation.png' width=50%></p>  
 
 + 标注文件  
   + 按场景标注  
@@ -160,7 +160,7 @@ E &　F-->G[检测头]
 + Pre-BEV feature extraction  
   先提取特征，再生成BEV表征
   + PV-RCNN  
-    + <p align='center'><img src='asserts/pv-rcnn.png'></p> 
+    + <p align='center'><img src='assets/pv-rcnn.png'></p> 
     +  point + voxel --> BEV feature map
 + Post-BEV feature extraction  
   先转换到BEV视图，再提取特征
@@ -383,11 +383,11 @@ graph LR
 ```
 + 基于点的(point-based)  
 > 直接对点云数据进行特征提取，再进一步提取点的稀疏表示  
-  + <p align=center><img src='asserts/pointnet++.png' width=80%><br><a href="https://github.com/charlesq34/pointnet2" target="_blank" title="https://github.com/charlesq34/pointnet2">（例）Point Net++ </a></p>
+  + <p align=center><img src='assets/pointnet++.png' width=80%><br><a href="https://github.com/charlesq34/pointnet2" target="_blank" title="https://github.com/charlesq34/pointnet2">（例）Point Net++ </a></p>
 
 + 基于体素的(voxel-based)  
 > 先将点云数据划分为体素，通过三维卷积对体素进行特征提取，再进一步提取体素的稀疏表示  
-  + <p align=center><img src='asserts/voxelnet.png' width=80%><br><a href="https://github.com/steph1793/Voxelnet" target="_blank" title="https://github.com/steph1793/Voxelnet">（例）VoxelNet</a></p>
+  + <p align=center><img src='assets/voxelnet.png' width=80%><br><a href="https://github.com/steph1793/Voxelnet" target="_blank" title="https://github.com/steph1793/Voxelnet">（例）VoxelNet</a></p>
 
 ### 2D-3D  
 > 由环视图像，构建BEV视角特征  
@@ -402,14 +402,14 @@ Z_{c}\left[\begin{matrix}x\\y\\1\end{matrix}\right]=\left[\begin{matrix}f&0&0&0\
 $$
 
 + LSS(Lift, Splat,and Shoot)  
-  + <p align=center><img src='asserts/lss.png' width=100%><br><a href="https://github.com/nv-tlabs/lift-splat-shoot" target="_blank" title="https://github.com/nv-tlabs/lift-splat-shoot">（例）LSS</a></p>  
+  + <p align=center><img src='assets/lss.png' width=100%><br><a href="https://github.com/nv-tlabs/lift-splat-shoot" target="_blank" title="https://github.com/nv-tlabs/lift-splat-shoot">（例）LSS</a></p>  
   + lift模块做**深度分布**  
   + splat做特征映射  
   + shoot做结果预测  
   + **离散深度估计**  
     + 连续深度预测任务转换为分类任务  
 + Pseudo Lidar  
-  + <p align=center><img src='asserts/pseudo-lidar.png' width=100%><br><a href="https://github.com/mileyan/pseudo_lidar" target="_blank" title="https://github.com/mileyan/pseudo_lidar">（例）Pseudo Lidar</a></p>  
+  + <p align=center><img src='assets/pseudo-lidar.png' width=100%><br><a href="https://github.com/mileyan/pseudo_lidar" target="_blank" title="https://github.com/mileyan/pseudo_lidar">（例）Pseudo Lidar</a></p>  
   + **连续深度估计**——伪点云  
 
 ### 3D-2D  
@@ -418,28 +418,28 @@ $$
 #### 显式映射 
 > 预先知道3D参考点,利用3D对象查询进行2D图像特征查询  
 + DETR3D 
-  + <p align=center><img src='asserts/detr3d.png' width=100%><br><a href="https://github.com/WangYueFt/detr3d" target="_blank" title="https://github.com/WangYueFt/detr3d">（例）DETR3D </a></p>  
+  + <p align=center><img src='assets/detr3d.png' width=100%><br><a href="https://github.com/WangYueFt/detr3d" target="_blank" title="https://github.com/WangYueFt/detr3d">（例）DETR3D </a></p>  
 + FUTR3D(多模态)  
     > 利用不同的骨干网络提取多模态特征，再根据查询点聚合多模态特征  
-    + <p align=center><img src='asserts/futr3d.png' width=100%><br><a href="https://github.com/Tsinghua-MARS-Lab/futr3d" target="_blank" title="https://github.com/Tsinghua-MARS-Lab/futr3d">（例）FUTR3D </a></p>  
+    + <p align=center><img src='assets/futr3d.png' width=100%><br><a href="https://github.com/Tsinghua-MARS-Lab/futr3d" target="_blank" title="https://github.com/Tsinghua-MARS-Lab/futr3d">（例）FUTR3D </a></p>  
 
 #### 隐式映射
 > 不知道3D参考点，不需要显式的2D-3D映射关系  
 + PETR3D  
-  + <p align=center><img src='asserts/petr3d.png' width=100%><br><a href="https://github.com/megvii-research/PETR" target="_blank" title="https://github.com/megvii-research/PETR">（例）PETR3D </a></p>
+  + <p align=center><img src='assets/petr3d.png' width=100%><br><a href="https://github.com/megvii-research/PETR" target="_blank" title="https://github.com/megvii-research/PETR">（例）PETR3D </a></p>
 ### BEV中的transformer  
 
 [各种注意力机制](https://www.cnblogs.com/wxkang/p/17133460.html)
 > + 通道注意力  
->   + <p align=center><img src='asserts/channelattention.png' width=100%><br>channel attention</p>
+>   + <p align=center><img src='assets/channelattention.png' width=100%><br>channel attention</p>
 > + 空间注意力   
->   + <p align=center><img src='asserts/stn.png' width=100%><br>spatial attention</p>  
+>   + <p align=center><img src='assets/stn.png' width=100%><br>spatial attention</p>  
 > + 混合注意力  
->   + <p align=center><img src='asserts/cbam.png' width=100%><br>cbam</p>  
->   + <p align=center><img src='asserts/cam.png' width=100%><br>cam</p>  
->   + <p align=center><img src='asserts/sam.png' width=100%><br>cam</p>    
+>   + <p align=center><img src='assets/cbam.png' width=100%><br>cbam</p>  
+>   + <p align=center><img src='assets/cam.png' width=100%><br>cam</p>  
+>   + <p align=center><img src='assets/sam.png' width=100%><br>cam</p>    
 > + 自注意力  
->   + <p align=center><img src='asserts/self-attention.png' width=100%><br>self-attention</p>  
+>   + <p align=center><img src='assets/self-attention.png' width=100%><br>self-attention</p>  
  #### 自注意力机制  
  > 计算给定序列的各位置之间的影响力大小  
  > 查询向量Q、键向量K、值向量V，计算相似度  
@@ -451,13 +451,13 @@ $$
   + 先划分Window，再在Window内划分Patch进行序列化，计算注意力  
 + **DETR——目标检测**  
   + 将目标检测问题转化为一个直接回归问题  
-  + <p align=center><img src='asserts/detr.png' width=100%><br>detr</p>  
+  + <p align=center><img src='assets/detr.png' width=100%><br>detr</p>  
 + RT-DETR  
   + 基于DETR（无NMS框架），同时引入基于CORV的主干网络和高效的混合编码器以获得实时速度  
-  + <p align=center><img src='asserts/rt-detr.png' width=100%><br>rt-detr</p>   
+  + <p align=center><img src='assets/rt-detr.png' width=100%><br>rt-detr</p>   
 + **DETR3D**  
   + 基于DETR，将BEV视角下的3D目标检测问题转化为一个直接回归问题  
-  + <p align=center><img src='asserts/detr3d.png' width=100%><br><a href="https://github.com/WangYueFt/detr3d" target="_blank" title="https://github.com/WangYueFt/detr3d">（例）DETR3D </a></p> 
+  + <p align=center><img src='assets/detr3d.png' width=100%><br><a href="https://github.com/WangYueFt/detr3d" target="_blank" title="https://github.com/WangYueFt/detr3d">（例）DETR3D </a></p> 
 ## BEV融合感知算法  
 > Lidar + Camera  
 > 模态信息的互补  
@@ -469,7 +469,7 @@ $$
 + 后融合(目标级融合)  
   + 将各模态模型的预测结果进行融合。作出最终决策  
 
-+ <p align=center><img src='asserts/fusion_methods.png' width=70%><br>fusion_methods </p> 
++ <p align=center><img src='assets/fusion_methods.png' width=70%><br>fusion_methods </p> 
 
 ```mermaid
 graph LR
@@ -478,7 +478,7 @@ graph LR
 
 ### 基础算法  
 #### [BEV-SAN](https://github.com/litwellchi/BEV-SAN)  
-+ <p align=center><img src='asserts/bev-san.png' width=100%><br><a href="https://github.com/litwellchi/BEV-SAN" target="_blank" title="https://github.com/litwellchi/BEV-SAN">BEV-SAN </a></p>
++ <p align=center><img src='assets/bev-san.png' width=100%><br><a href="https://github.com/litwellchi/BEV-SAN" target="_blank" title="https://github.com/litwellchi/BEV-SAN">BEV-SAN </a></p>
 + 主要针对BEV特征构造模块的工作  
   + 已有算法专注于高度维度展平BEV空间，导致**高度维度上的信息丢失**  
   + 核心设计是**切片注意力网络(Slice Attention Network)**  
@@ -489,10 +489,6 @@ graph LR
   + 提出Fusion Transformer，同时融合全局和局部特征  
 
 #### BEVFusion  
-
-+ BEV Fusion MIT
-  + <p align=center><img src='asserts/bevfusion_mit.png' width=100%><br><a href="https://github.com/mit-han-lab/bevfusion" target="_blank" title="https://github.com/mit-han-lab/bevfusion">bevfusion_mit</a></p> 
-
 + BEV Fusion 阿里  
   + > 输入：多视角图像  
     > 步骤 1：2D Backbone 提取基础图像特征  
@@ -500,7 +496,7 @@ graph LR
     > 步骤 3：2D➡3D 特征转换模块  
     > 步骤 4：3D➡BEV 特征编码模块  
     > 输出：Camera BEV Features  
-  + <p align=center><img src='asserts/bevfusion_ali.png' width=80%><br><a href="https://github.com/ADLab-AutoDrive/BEVFusion" target="_blank" title="https://github.com/ADLab-AutoDrive/BEVFusion">bevfusion_ali</a></p>   
+  + <p align=center><img src='assets/bevfusion_ali.png' width=80%><br><a href="https://github.com/ADLab-AutoDrive/BEVFusion" target="_blank" title="https://github.com/ADLab-AutoDrive/BEVFusion">bevfusion_ali</a></p>   
   + 相机支路  
     + FPN+ADP  
       + > 输入：基础图像特征   
@@ -508,31 +504,69 @@ graph LR
         > 步骤 2：ADP 模块包括上采样、池化、卷积  
         > 步骤 3：多层特征融合  
         > 输出：多尺度融合特征  
-      + <p align=center><img src='asserts/fpn+adp.png' width=80%><br>fpn+adp模块</p>  
+      + <p align=center><img src='assets/fpn+adp.png' width=80%><br>fpn+adp模块</p>  
     + 2D➡3D 特征转换  
       + > 输入：多尺度融合特征  
         > 步骤 1：深度分布估计  
         > 步骤 2：2D 到 3D 投影计算  
         > 输出：3D 伪体素特征  
-      + <p align=center><img src='asserts/2d23d.png' width=80%><br>2D➡3D特征转换</p>  
+      + <p align=center><img src='assets/2d23d.png' width=80%><br>2D➡3D特征转换</p>  
   + 点云支路  
     + 点云特征提取方案有基于点的、基于体素的，包括 PointPillars、CenterPoint、TransFusion等  
-    + <p align=center><img src='asserts/piontpillars.png' width=80%><br>PointPillars网络结构</p> 
+    + <p align=center><img src='assets/piontpillars.png' width=80%><br>PointPillars网络结构</p> 
     + Pillar 是一个用于聚合特征的柱状空间，一个柱子包含 `N` 个点，每个点的特征是 `D` 维，，一个 3D 场景有 `P` 个柱子，则整个 3D 场景用柱子特征来表示就是 $P \times D \times N$   
       + PointPillars 中默认 `D` 是一个 9 维量 
         + $(x,y,z)$ 是点的坐标  
         + $(x_{c},y_{c},z_{c})$ 是点所在 pillar 的中心点坐标  
         + $(x_{p},y_{p})$ 是点距离柱子中心点的偏移量  
-          + > **为什么 PointPillars 不考虑 `z` 方向的偏移量？:question:**   
-            > PointPillars 主要用于处理从地面车辆（如自动驾驶汽车）收集的点云数据。在这类应用中，z 方向（垂直于地面）的变化通常不如 x 和 y 方向（水平方向）那么显著或重要。因此，z 方向的偏移可能被认为对模型的性能影响不大，而忽略它可以简化模型并减少计算需求。另一个可能的原因是在垂直方向上，点云数据可能展示出不同的分布特性，使得直接使用不如其他维度那么有效  
+          + > :question: **为什么 PointPillars 不考虑 `z` 方向的偏移量**   
+            > *PointPillars 主要用于处理从地面车辆（如自动驾驶汽车）收集的点云数据。在这类应用中，z 方向（垂直于地面）的变化通常不如 x 和 y 方向（水平方向）那么显著或重要。因此，z 方向的偏移可能被认为对模型的性能影响不大，而忽略它可以简化模型并减少计算需求。另一个可能的原因是在垂直方向上，点云数据可能展示出不同的分布特性，使得直接使用不如其他维度那么有效*   
         + 反射值 $r$ 表示点云中每个点的反射强度,反映了对象表面反射激光脉冲的能力  
+  + 融合  
+    + <p align=center><img src='assets/融合模块.png' width=80%><br>融合模块</p>  
+    + > 输入：点云和图像 BEV 特征  
+      > 步骤 1：按通道维度级联点云和图像 BEV 特征，再通过卷积网络提取级联后的特征  
+      > 步骤 2：通过全局平均池化和卷积预测，实现对级联特征的自适应挑选，类似于通道注意力  
+      > 输出：融合后的特征  
+
++ BEV Fusion MIT
+  + <p align=center><img src='assets/bevfusion_mit.png' width=100%><br><a href="https://github.com/mit-han-lab/bevfusion" target="_blank" title="https://github.com/mit-han-lab/bevfusion">bevfusion_mit</a></p>    
+  + 工作思路是一致的，都是通过分开提取特征再融合的方式得到融合后的 BEV 特征，其中 Camera Stream 和 LiDAR Stream 的处理一致  
+  + 额外引入了分割任务  
+
 ## 基于环视camera的BEV感知算法  
 > Only Camera  
+> 相机具有最密集的信息  
+> 相机成本最低  
 
 ### 基础算法  
+
+#### **DETR3D** 
++ DETR  
+  + ![detr](assets/detr.png)
++ DETR3D基于DETR，将BEV视角下的3D目标检测问题转化为一个直接回归问题  
+  + <p align=center><img src='assets/detr3d.png' width=100%><br><a href="https://github.com/WangYueFt/detr3d" target="_blank" title="https://github.com/WangYueFt/detr3d">DETR3D</a></p>  
++ 图像特征提取模块——resnet+fpn    
+  + 输入：多视角相机图像，相机内外参数  
+  + 步骤1：2D骨干网络提取图像特征  
+  + 步骤2：FPN，多尺度特征融合  
+  + 输出：图像特征
+
++ 特征转换模块  
+  + 输入：多视角图像特征、Object Queries  
+    + Object Queries是一系列指定数目的随机初始化的查询向量，用于查询空间中哪里有物体  
+    + Queries是 transformer结构，预测生成一系列Reference Points(参考点)  
+  + 步骤1：提取参考点  
+  + 步骤2：点--->图像像素  
+  + 步骤3：图像特征提取  
+  + 步骤4：2D特征优化3D表征  
+  + 输出：Object Feature  
++ 损失函数  
+  + 二分图匹配  
+    + 图像中物体真值集合用空集补全至与预测集合数量一致  
+    + 两集合内目标物体一一对应计算损失  
+
 #### BEVFormer  
-+ <p align='center'><img src='asserts/bevformer.png'></p>
-#### **DETR3D**  
-+ 基于DETR，将BEV视角下的3D目标检测问题转化为一个直接回归问题  
-+ <p align=center><img src='asserts/detr3d.png' width=100%><br><a href="https://github.com/WangYueFt/detr3d" target="_blank" title="https://github.com/WangYueFt/detr3d">DETR3D</a></p> 
++ <p align='center'><img src='assets/bevformer.png'></p>
+
 ## BEV实战  
