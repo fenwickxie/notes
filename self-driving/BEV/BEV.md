@@ -490,14 +490,14 @@ graph LR
 
 #### BEVFusion  
 + BEV Fusion 阿里  
-  + > 输入：多视角图像  
+  + <p align=center><img src='assets/bevfusion_ali.png' width=80%><br><a href="https://github.com/ADLab-AutoDrive/BEVFusion" target="_blank" title="https://github.com/ADLab-AutoDrive/BEVFusion">bevfusion_ali</a></p>   
+  + 相机支路  
+    > 输入：多视角图像  
     > 步骤 1：2D Backbone 提取基础图像特征  
     > 步骤 2：FPN+ADP，多尺度特征融合  
     > 步骤 3：2D➡3D 特征转换模块  
     > 步骤 4：3D➡BEV 特征编码模块  
     > 输出：Camera BEV Features  
-  + <p align=center><img src='assets/bevfusion_ali.png' width=80%><br><a href="https://github.com/ADLab-AutoDrive/BEVFusion" target="_blank" title="https://github.com/ADLab-AutoDrive/BEVFusion">bevfusion_ali</a></p>   
-  + 相机支路  
     + FPN+ADP  
       + > 输入：基础图像特征   
         > 步骤 1：每层特征使用 ADP 模块  
