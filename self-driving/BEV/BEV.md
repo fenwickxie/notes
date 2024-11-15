@@ -569,4 +569,49 @@ graph LR
 #### BEVFormer  
 + <p align='center'><img src='assets/bevformer.png'></p>
 
-## BEV实战  
++ 视角转换模块  
+  + 输入：多视角图像特征、历史BEV特征(时序层面特征)、BEV query  
+  + 步骤1：**时序自注意力**，利用BEV query融合多视角图像特征和历史BEV特征   
+    + 引入Deformable Attention，引入注意力偏移量，使注意力机制更加灵活，解决以下两个问题  
+      + **引入前一时刻的BEV特征**  
+      + **不同帧中车的偏移量不同**  
+    + 多视角图像特征利用BEV query查询对应的历史BEV特征  
+    + BEV query上做self-attention  
+  + 步骤2：空间交叉注意力  
+    + 选择所需要的特征  
+      + 同样引入bev query和Deformable Attention  
+    + 建模高度信息  
+      + 设置一系列不同高度anchor  
+  + 输出：当前BEV特征  
+
++ BEVFormer v2  
+  + ![bevformerv2](assets/bevformerv2.png)  
+  + 添加一个近端检测头perspective 3d head，增强原有的远端预测头对于主干网络参数的更新  
+  + 两阶段检测器
+    + 将第一阶段的初步检测结果与第二阶段中的随机初始化的object query进行混合得到新的object query  
+#### BEVDet  
++ ![bevdet](assets/bevdet.png)  
++ 图像视图编码器  
+  + 输入：多视角图像  
+  + 步骤1：2D主干网络(ResNet+Swin-Transformer)提取特征  
+  + 步骤2：多尺度融合特征(FPN)  
+  + 输出：多视角图像特征  
++ 视角转换模块  
+  + 输入：所视角图像特征  
+  + 步骤1：深度分布预测   
+  + 步骤2：2D-->3D特征映射  
+  + 输出：3D视锥特征(伪体素)  
++ BEV编码器  
+  + 输入：3D视锥特征  
+  + 步骤1：池化  
+  + 步骤2：多尺度融合  
+  + BEV空间特征  
++ 改进策略  
+  + 为了防止模型的过拟合，在BEV的空间中进行额外的数据增强操作  
+    + 图像输入是BEV数据量的N(相机数量)倍  
+  + 对NMS进行升级，以提高在三维场景的适应性  
+    + ![scaling_nms](assets/scaling_nms.png)  
+#### BEVDet4D  
++ ![bevdet4d](assets/bevdet4d.png)  
++ ![bevdet4d_align](assets/bevdet4d_align.png)
+# BEV实战  
